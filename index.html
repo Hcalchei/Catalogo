@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Melesia - Catálogo Oficial de Fábrica</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-stone-100 text-stone-800 antialiased min-h-screen flex flex-col selection:bg-amber-500 selection:text-white">
+
+  <!-- Pantalla de Acceso (Gatekeeper) -->
+  <div id="login-overlay" class="fixed inset-0 z-50 bg-stone-900/70 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white max-w-md w-full p-8 rounded-3xl shadow-2xl text-center border border-stone-200">
+      <div class="w-16 h-16 bg-amber-100 rounded-2xl mx-auto flex items-center justify-center text-amber-700 mb-5 shadow-inner border border-amber-200">
+        <i data-lucide="lock" class="w-8 h-8"></i>
+      </div>
+      <h2 class="text-2xl font-extrabold text-stone-900 mb-2">Acceso Exclusivo</h2>
+      <p class="text-sm text-stone-500 mb-6">Ingresa tu código asignado para visualizar tu lista de precios comercial.</p>
+      
+      <form onsubmit="checkAccess(event)" class="space-y-4">
+        <input type="text" id="access-code" placeholder="Código de Acceso" required
+          class="w-full bg-stone-50 border border-stone-300 text-stone-900 text-center text-lg font-bold rounded-xl p-4 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none transition uppercase tracking-wider">
+        <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-4 rounded-xl text-base transition shadow-lg shadow-amber-600/25 active:scale-[0.99]">
+          Ingresar al Catálogo
+        </button>
+      </form>
+      <p id="login-error" class="text-red-500 text-xs font-bold mt-4 hidden bg-red-50 p-2.5 rounded-lg border border-red-200">Código incorrecto. Verifica e intenta nuevamente.</p>
+    </div>
+  </div>
+
+  <!-- Contenedor Principal (Oculto hasta ingresar) -->
+  <div id="main-content" class="hidden flex-1 flex flex-col">
+    
+    <!-- Header Comercial -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-stone-200 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex justify-between items-center">
+        <div class="flex items-center space-x-3.5">
+          <div class="w-11 h-11 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-stone-200 overflow-hidden p-1">
+            <img src="Logo.jpg" alt="Logo Melesia" class="w-full h-full object-contain rounded-xl">
+          </div>
+          <div>
+            <span class="text-xl font-black text-stone-900 tracking-tight block leading-none">Melesia</span>
+            <span class="text-[9px] font-extrabold text-amber-700 tracking-widest uppercase mt-0.5 block">Miel & Dulces de Fábrica</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="toggleCart()" class="relative bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-950 px-4 py-2.5 rounded-xl flex items-center gap-2.5 transition font-bold text-sm shadow-sm group">
+            <i data-lucide="shopping-bag" class="w-4 h-4 text-amber-700 group-hover:scale-110 transition-transform"></i>
+            <span class="hidden sm:inline">Tu Pedido</span>
+            <span id="cart-count" class="bg-amber-600 text-white text-xs font-extrabold rounded-full h-5 min-w-[20px] px-1 flex items-center justify-center shadow-sm hidden">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-amber-100/60 via-amber-50/30 to-stone-100 py-10 border-b border-stone-200/60">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span class="inline-flex items-center gap-1.5 bg-amber-100 text-amber-900 text-xs font-bold px-3.5 py-1.5 rounded-full border border-amber-300/60 mb-3 shadow-sm">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-700"></i> Venta Directa Mayorista y Minorista
+        </span>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-stone-900 tracking-tight mb-3">
+          Catálogo Comercial Melesia
+        </h1>
+        <p class="text-stone-600 max-w-2xl mx-auto text-sm sm:text-base mb-5 leading-relaxed">
+          Selecciona tus productos por pack cerrado y arma tu pedido de forma rápida y ágil.
+        </p>
+        
+        <!-- Aclaración de IVA y Consumidor Final -->
+        <div class="inline-flex items-center justify-center gap-2 bg-white text-emerald-800 px-4 py-2 rounded-xl border border-emerald-200 text-xs sm:text-sm font-bold shadow-sm">
+          <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+          Precios para Consumidor Final (IVA Incluido)
+        </div>
+      </div>
+    </section>
+
+    <!-- Filtro por Categorías -->
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-5 mb-8 z-10 relative">
+      <div id="category-filters" class="flex flex-wrap justify-center gap-2 p-2 bg-white border border-stone-200 rounded-2xl shadow-md">
+        <button onclick="filterCategory('ALL')" class="cat-btn active bg-stone-900 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-sm">Todos</button>
+        <button onclick="filterCategory('PAMPERA')" class="cat-btn bg-stone-50 hover:bg-amber-50 text-stone-700 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">PAMPERA</button>
+        <button onclick="filterCategory('LA CHACRA')" class="cat-btn bg-stone-50 hover:bg-amber-50 text-stone-700 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">LA CHACRA</button>
+        <button onclick="filterCategory('FLOR DE CAMPO - UNTABLE')" class="cat-btn bg-stone-50 hover:bg-amber-50 text-stone-700 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">UNTABLE (33%)</button>
+        <button onclick="filterCategory('FLOR DE CAMPO - MIEL DE ABEJAS')" class="cat-btn bg-stone-50 hover:bg-amber-50 text-stone-700 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">FLOR DE CAMPO (Pura)</button>
+        <button onclick="filterCategory('LA CHACRA - DULCE DE LECHE')" class="cat-btn bg-stone-50 hover:bg-amber-50 text-stone-700 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">DULCE DE LECHE</button>
+      </div>
+    </nav>
+
+    <!-- Catálogo Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 flex-1 w-full">
+      <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <!-- Carga dinámica vía JS -->
+      </div>
+    </main>
+
+    <footer class="bg-white border-t border-stone-200 py-6 text-center text-xs text-stone-500 mt-auto shadow-inner">
+      <p>© 2026 Melesia. Todos los derechos reservados. Sistema de Pedidos Directos.</p>
+    </footer>
+
+  </div>
+
+  <!-- Modal / Drawer de Carrito Mejorado -->
+  <div id="cart-modal" class="fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm hidden flex justify-end transition-opacity">
+    <div class="bg-white w-full max-w-md h-full flex flex-col justify-between shadow-2xl transform transition-transform">
+      <!-- Header Carrito -->
+      <div class="p-5 border-b border-stone-200 flex justify-between items-center bg-stone-50">
+        <div>
+          <h3 class="text-lg font-extrabold text-stone-900 flex items-center gap-2">
+            <i data-lucide="shopping-cart" class="w-5 h-5 text-amber-600"></i> Tu Pedido Actual
+          </h3>
+          <p class="text-xs text-stone-500">Verifica los bultos seleccionados</p>
+        </div>
+        <button onclick="toggleCart()" class="p-2 text-stone-400 hover:text-stone-700 rounded-xl hover:bg-stone-200/60 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Items del Carrito -->
+      <div id="cart-items" class="p-5 flex-1 overflow-y-auto space-y-4 divide-y divide-stone-100">
+        <p class="text-stone-400 text-center py-16 text-sm">El carrito está vacío</p>
+      </div>
+
+      <!-- Footer Carrito -->
+      <div class="p-5 border-t border-stone-200 bg-stone-50 space-y-4 shadow-lg">
+        <div class="flex justify-between items-baseline bg-white p-3.5 rounded-2xl border border-stone-200 shadow-sm">
+          <span class="text-sm font-bold text-stone-600">Total General:</span>
+          <span id="cart-total" class="text-2xl font-black text-amber-900">$0,00</span>
+        </div>
+        <p class="text-[10px] text-stone-500 text-center font-medium">* Precios finales con IVA incluido</p>
+
+        <button onclick="sendWhatsAppOrder()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-4 px-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition text-base active:scale-[0.99]">
+          <i data-lucide="message-square" class="w-5 h-5"></i> Enviar Pedido por WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // SISTEMA DE CONTRASEÑAS
+    const accessCodes = {
+      'XK9B2': 0.15, // 15% de descuento
+      'M4V8P': 0.20, // 20% de descuento
+      'R7D3F': 0.25, // 25% de descuento
+      'W2N6T': 0.30, // 30% de descuento
+      'Q9L5J': 0.35, // 35% de descuento
+      'VISITA': 0.00 // Sin descuento
+    };
+
+    let currentDiscount = 0;
+    
+    function checkAccess(e) {
+      e.preventDefault();
+      const codeInput = document.getElementById('access-code').value.trim().toUpperCase();
+      const errorMsg = document.getElementById('login-error');
+
+      if (accessCodes.hasOwnProperty(codeInput)) {
+        currentDiscount = accessCodes[codeInput];
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('main-content').classList.remove('hidden');
+        renderProducts();
+      } else {
+        errorMsg.classList.remove('hidden');
+      }
+    }
+
+    function getFinalPrice(basePrice) {
+      return basePrice * (1 - currentDiscount);
+    }
+
+    // LISTADO DE PRODUCTOS
+    const products = [
+      {
+        id: "pampera",
+        category: "PAMPERA",
+        title: "PAMPERA - Miel Tradicional",
+        badge: "Miel",
+        image: "Pampera-Portada.jpg",
+        desc: "Línea Pampera. Presentaciones en frasco tradicional para consumo familiar o comercial.",
+        hasTextureOption: false,
+        items: [
+          { name: "250 GR. X 12 U.", price: 12214.61 },
+          { name: "500 GR. X 6 U.", price: 11520.77 },
+          { name: "500 GR. X 12 U.", price: 22689.69 }
+        ]
+      },
+      {
+        id: "la_chacra",
+        category: "LA CHACRA",
+        title: "LA CHACRA - Miel Botella PET",
+        badge: "Envase PET",
+        image: "Chacra-Portada.jpg",
+        desc: "Miel pura presentada en botellas prácticas e irrompibles de PET.",
+        hasTextureOption: false,
+        items: [
+          { name: "350 G X 12 U. BOTELLA PET", price: 19413.85 },
+          { name: "500 G X 12 U. BOTELLA PET", price: 25369.23 },
+          { name: "750 G X 12 U. BOTELLA PET", price: 33677.69 },
+          { name: "1000 G X 8 U. BOTELLA PET", price: 27061.08 },
+          { name: "1500 G X 6 U. BOTELLA PET", price: 27972.15 }
+        ]
+      },
+      {
+        id: "flor_untable",
+        category: "FLOR DE CAMPO - UNTABLE",
+        title: "FLOR DE CAMPO - UNTABLE",
+        badge: "Mezcla 33% Miel",
+        image: "FDC-Mezcla-Portada.jpg",
+        desc: "Producto Untable especial de la marca Flor de Campo. Elaborado con mezcla balanceada al 33% de miel.",
+        hasTextureOption: false,
+        items: [
+          { name: "250 GR. X 12 U.", price: 25034.00 },
+          { name: "500 GR. X 12 U.", price: 36824.77 },
+          { name: "1000 GR. X 6 U.", price: 28748.00 }
+        ]
+      },
+      {
+        id: "flor_miel",
+        category: "FLOR DE CAMPO - MIEL DE ABEJAS",
+        title: "FLOR DE CAMPO - MIEL DE ABEJAS",
+        badge: "100% Miel Pura",
+        image: "FDC-Miel-Portada.jpg",
+        desc: "Miel pura de abejas seleccionada. Disponible en consistencia Líquida o Cremosa según su preferencia.",
+        hasTextureOption: true,
+        items: [
+          { name: "250 GR. X 12 U.", price: 35939.23 },
+          { name: "500 GR. X 12 U.", price: 58284.77 },
+          { name: "1000 GR. X 6 U.", price: 51972.15 }
+        ]
+      },
+      {
+        id: "la_chacra_ddl",
+        category: "LA CHACRA - DULCE DE LECHE",
+        title: "LA CHACRA - DULCE DE LECHE",
+        badge: "Dulce de Leche",
+        image: "DDL-Chara-Portada.jpg",
+        desc: "Dulce de leche artesanal elaborado bajo altos estándares de calidad.",
+        hasTextureOption: false,
+        items: [
+          { name: "400 G X 12 U.", price: 15000.0 }
+        ]
+      }
+    ];
+
+    let cart = [];
+    let currentFilter = 'ALL';
+
+    function formatPrice(val) {
+      return '$' + val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('product-grid');
+      const filtered = currentFilter === 'ALL' ? products : products.filter(p => p.category === currentFilter);
+
+      grid.innerHTML = filtered.map(p => {
+        return `
+          <div class="bg-white rounded-3xl border border-stone-200/90 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group">
+            <div>
+              <div class="relative w-full h-52 bg-amber-50/60 overflow-hidden">
+                <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <div class="absolute top-3.5 left-3.5">
+                  <span class="text-xs font-extrabold px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-md text-amber-950 shadow-sm border border-stone-200/60">${p.badge}</span>
+                </div>
+              </div>
+
+              <div class="p-6">
+                <span class="text-[11px] font-extrabold text-stone-400 uppercase tracking-widest block mb-1">${p.category}</span>
+                <h3 class="font-black text-xl text-stone-900 mb-2">${p.title}</h3>
+                <p class="text-xs text-stone-500 mb-6 leading-relaxed">${p.desc}</p>
+                
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-xs font-extrabold text-stone-700 uppercase tracking-wider mb-2">
+                      Presentación (Pack cerrado):
+                    </label>
+                    <select id="select-item-${p.id}" onchange="updateCardPrice('${p.id}')" class="w-full bg-stone-50 border border-stone-200 text-stone-800 text-sm font-bold rounded-2xl p-3.5 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none transition shadow-sm cursor-pointer">
+                      ${p.items.map((item, idx) => `<option value="${idx}">${item.name} — ${formatPrice(getFinalPrice(item.price))}</option>`).join('')}
+                    </select>
+                  </div>
+
+                  ${p.hasTextureOption ? `
+                    <div>
+                      <label class="block text-xs font-extrabold text-amber-900 uppercase tracking-wider mb-2">
+                        Variante de Consistencia:
+                      </label>
+                      <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center justify-center p-3 border border-stone-200 rounded-xl cursor-pointer hover:bg-amber-50/80 hover:border-amber-300 transition text-xs font-extrabold text-stone-700 bg-stone-50">
+                          <input type="radio" name="texture-${p.id}" value="Líquida" checked class="accent-amber-600 mr-2"> Líquida
+                        </label>
+                        <label class="flex items-center justify-center p-3 border border-stone-200 rounded-xl cursor-pointer hover:bg-amber-50/80 hover:border-amber-300 transition text-xs font-extrabold text-stone-700 bg-stone-50">
+                          <input type="radio" name="texture-${p.id}" value="Cremosa" class="accent-amber-600 mr-2"> Cremosa
+                        </label>
+                      </div>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+
+            <div class="px-6 pb-6 pt-4 border-t border-stone-100 flex items-center justify-between bg-stone-50/40">
+              <div>
+                <span class="text-[10px] text-stone-400 block font-extrabold uppercase tracking-wider">Precio Final Pack (C/IVA)</span>
+                <span id="price-display-${p.id}" class="text-2xl font-black text-amber-950">
+                  ${formatPrice(getFinalPrice(p.items[0].price))}
+                </span>
+              </div>
+              <button onclick="addToCart('${p.id}')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-5 py-3 rounded-2xl text-sm transition flex items-center gap-2 shadow-md shadow-amber-600/20 active:scale-95">
+                <i data-lucide="plus" class="w-4 h-4 stroke-[3]"></i> Agregar
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      lucide.createIcons();
+    }
+
+    function updateCardPrice(productId) {
+      const p = products.find(item => item.id === productId);
+      const idx = document.getElementById(`select-item-${productId}`).value;
+      const display = document.getElementById(`price-display-${productId}`);
+      display.innerText = formatPrice(getFinalPrice(p.items[idx].price));
+    }
+
+    function addToCart(productId) {
+      const p = products.find(item => item.id === productId);
+      const itemIdx = document.getElementById(`select-item-${productId}`).value;
+      const selectedItem = p.items[itemIdx];
+
+      let texture = null;
+      if (p.hasTextureOption) {
+        const radios = document.getElementsByName(`texture-${productId}`);
+        for (const radio of radios) {
+          if (radio.checked) {
+            texture = radio.value;
+            break;
+          }
+        }
+      }
+
+      const cartKey = `${productId}-${itemIdx}-${texture || 'standard'}`;
+      const existing = cart.find(item => item.cartKey === cartKey);
+      const priceToApply = getFinalPrice(selectedItem.price);
+
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({
+          cartKey,
+          title: p.title,
+          presentation: selectedItem.name,
+          texture: texture,
+          price: priceToApply,
+          qty: 1
+        });
+      }
+
+      updateCartUI();
+      toggleCart(true);
+    }
+
+    function updateCartUI() {
+      const cartCount = document.getElementById('cart-count');
+      const cartItems = document.getElementById('cart-items');
+      const cartTotal = document.getElementById('cart-total');
+
+      const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      cartCount.innerText = totalItems;
+      cartCount.classList.toggle('hidden', totalItems === 0);
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = `<p class="text-stone-400 text-center py-16 text-sm font-medium">El carrito está vacío</p>`;
+      } else {
+        cartItems.innerHTML = cart.map(item => `
+          <div class="pt-4 first:pt-0">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <h4 class="font-extrabold text-stone-900 text-sm leading-tight">${item.title}</h4>
+                <p class="text-xs text-amber-800 font-bold mt-0.5">${item.presentation}</p>
+                ${item.texture ? `<span class="inline-block mt-1 bg-amber-100 text-amber-900 text-[10px] font-black px-2 py-0.5 rounded-md">Variante: ${item.texture}</span>` : ''}
+              </div>
+              <button onclick="removeFromCart('${item.cartKey}')" class="text-stone-300 hover:text-red-600 transition p-1.5 rounded-lg hover:bg-red-50">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <div class="flex justify-between items-center mt-3 bg-stone-50/80 p-2.5 rounded-xl border border-stone-200/60">
+              <!-- Control de cantidad manual y botones -->
+              <div class="flex items-center border border-stone-300 rounded-xl bg-white shadow-sm overflow-hidden">
+                <button onclick="changeQty('${item.cartKey}', -1)" class="px-2.5 py-1 text-stone-600 hover:bg-stone-100 font-black text-xs transition">-</button>
+                <input type="number" min="1" value="${item.qty}" onchange="setQty('${item.cartKey}', this.value)" class="w-12 text-center text-xs font-black text-stone-900 outline-none bg-transparent">
+                <button onclick="changeQty('${item.cartKey}', 1)" class="px-2.5 py-1 text-stone-600 hover:bg-stone-100 font-black text-xs transition">+</button>
+              </div>
+              <span class="font-black text-amber-950 text-sm">${formatPrice(item.price * item.qty)}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      cartTotal.innerText = formatPrice(totalPrice);
+      lucide.createIcons();
+    }
+
+    function changeQty(cartKey, delta) {
+      const item = cart.find(i => i.cartKey === cartKey);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(i => i.cartKey !== cartKey);
+      }
+      updateCartUI();
+    }
+
+    function setQty(cartKey, val) {
+      const item = cart.find(i => i.cartKey === cartKey);
+      if (!item) return;
+      const newQty = parseInt(val);
+      if (isNaN(newQty) || newQty <= 0) {
+        cart = cart.filter(i => i.cartKey !== cartKey);
+      } else {
+        item.qty = newQty;
+      }
+      updateCartUI();
+    }
+
+    function removeFromCart(cartKey) {
+      cart = cart.filter(item => item.cartKey !== cartKey);
+      updateCartUI();
+    }
+
+    function toggleCart(forceOpen = false) {
+      const modal = document.getElementById('cart-modal');
+      if (forceOpen) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.toggle('hidden');
+      }
+    }
+
+    function filterCategory(cat) {
+      currentFilter = cat;
+      const buttons = document.querySelectorAll('.cat-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('bg-stone-900', 'text-white', 'shadow-sm');
+        btn.classList.add('bg-stone-50', 'text-stone-700');
+      });
+
+      event.target.classList.remove('bg-stone-50', 'text-stone-700');
+      event.target.classList.add('bg-stone-900', 'text-white', 'shadow-sm');
+
+      renderProducts();
+    }
+
+    function sendWhatsAppOrder() {
+      if (cart.length === 0) return alert("Por favor, agrega productos a tu pedido antes de continuar.");
+
+      const phone = "5491138311470";
+      let message = "*NUEVO PEDIDO - MELESIA*\n";
+      message += "=============================\n\n";
+
+      cart.forEach((item, i) => {
+        message += `*${i + 1}. ${item.title}*\n`;
+        message += `   • Presentación: ${item.presentation}\n`;
+        if (item.texture) {
+          message += `   • Variante: *${item.texture}*\n`;
+        }
+        message += `   • Cantidad: ${item.qty} pack(s)\n`;
+        message += `   • Subtotal: ${formatPrice(item.price * item.qty)}\n\n`;
+      });
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      message += "=============================\n";
+      message += `*TOTAL DEL PEDIDO (Consumidor Final C/IVA): ${formatPrice(total)}*\n\n`;
+      message += "Quedo a la espera de la confirmación de stock, medio de pago y coordinación del envío. ¡Gracias!";
+
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>
