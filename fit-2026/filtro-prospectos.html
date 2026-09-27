@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Filtro de Prospectos FIT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --bg: #F2F4F7;
+    --surface: #FFFFFF;
+    --surface-2: #E9EDF2;
+    --ink: #142033;
+    --muted: #566377;
+    --line: #D5DCE4;
+    --accent: #1A5BA6;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E2ECF8;
+    --good: #1B7A50;
+    --good-soft: #DFF2E8;
+    --warn: #8F5B0C;
+    --warn-soft: #FAEFD9;
+    --bad: #A63434;
+    --bad-soft: #F7E2E2;
+    --wa: #17804A;
+    --wa-ink: #FFFFFF;
+    --board: #142033;
+    --board-ink: #EEF2F6;
+    --board-muted: #93A3B8;
+    --cell: #2A3A52;
+    --b-good: #5CD39A;
+    --b-warn: #F0B85A;
+    --b-bad: #F08A8A;
+    --shadow: 0 1px 2px rgba(20, 32, 51, .06), 0 10px 28px rgba(20, 32, 51, .07);
+    --display: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+    --body: 'Public Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0D131B;
+      --surface: #151E29;
+      --surface-2: #1C2835;
+      --ink: #E4EAF1;
+      --muted: #97A5B6;
+      --line: #2A3848;
+      --accent: #6AA6E6;
+      --accent-ink: #0D131B;
+      --accent-soft: #1A2D44;
+      --good: #5CC795;
+      --good-soft: #15302A;
+      --warn: #E3AE55;
+      --warn-soft: #33281A;
+      --bad: #EE8080;
+      --bad-soft: #3A1E22;
+      --wa: #2FA866;
+      --wa-ink: #07140D;
+      --board: #090E14;
+      --cell: #223041;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px rgba(0, 0, 0, .25);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0D131B;
+    --surface: #151E29;
+    --surface-2: #1C2835;
+    --ink: #E4EAF1;
+    --muted: #97A5B6;
+    --line: #2A3848;
+    --accent: #6AA6E6;
+    --accent-ink: #0D131B;
+    --accent-soft: #1A2D44;
+    --good: #5CC795;
+    --good-soft: #15302A;
+    --warn: #E3AE55;
+    --warn-soft: #33281A;
+    --bad: #EE8080;
+    --bad-soft: #3A1E22;
+    --wa: #2FA866;
+    --wa-ink: #07140D;
+    --board: #090E14;
+    --cell: #223041;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px rgba(0, 0, 0, .25);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 15px/1.5 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  p { margin: 0; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  .app { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 0 40px; }
+  @media (min-width: 640px) { .app { padding-inline: 24px; } }
+  .app.with-bar { padding-block-end: 96px; }
+  @media (min-width: 960px) { .app.with-bar { padding-block-end: 40px; } }
+
+  /* Header */
+  .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px 16px; flex-wrap: wrap; padding-block: 20px 14px; }
+  .eyebrow { font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); }
+  h1 { font-family: var(--display); font-weight: 700; font-size: clamp(32px, 7vw, 44px); line-height: 1; margin-block: 2px 6px; }
+  .sub { color: var(--muted); max-width: 60ch; }
+  .sync { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  .sync::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+  .sync[data-s="ok"]::before { background: var(--good); }
+  .sync[data-s="local"]::before { background: var(--warn); }
+  .sync[data-s="err"]::before { background: var(--bad); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); overflow-x: auto; margin-bottom: 18px; scrollbar-width: none; }
+  .tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 10px; font-weight: 600; color: var(--muted); cursor: pointer; white-space: nowrap; display: inline-flex; gap: 6px; align-items: center; }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .tab:hover { color: var(--ink); }
+  .count { font-size: 12px; font-variant-numeric: tabular-nums; background: var(--surface-2); color: var(--muted); border-radius: 999px; padding: 1px 7px; }
+
+  /* Generic */
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .label { font-family: var(--display); font-weight: 600; font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .grid2 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 560px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+  .field { display: grid; gap: 4px; min-width: 0; }
+  .field > span, .field-label { font-size: 13px; font-weight: 600; color: var(--muted); }
+  input[type="text"], input[type="tel"], input[type="email"], input[type="date"], input[type="time"], input[type="search"], input[type="url"], select, textarea {
+    width: 100%; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 44px;
+  }
+  textarea { resize: vertical; min-height: 84px; }
+  input::placeholder, textarea::placeholder { color: var(--muted); opacity: .75; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+  .hint { font-size: 12px; color: var(--muted); min-height: 1em; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 15px; line-height: 1.2; border: 1px solid transparent; cursor: pointer; text-decoration: none; text-align: center; background: var(--surface-2); color: var(--ink); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); }
+  .btn.wa { background: var(--wa); color: var(--wa-ink); }
+  .btn.outline { background: transparent; border-color: var(--line); }
+  .btn.outline:hover { border-color: var(--accent); }
+  .btn.ghost { background: transparent; color: var(--accent); padding-inline: 8px; }
+  .btn.small { min-height: 36px; padding: 6px 12px; font-size: 14px; }
+  .btn.danger { color: var(--bad); }
+  .btn.armed { background: var(--bad); color: #fff; }
+  .btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+
+  /* Chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { position: relative; display: inline-flex; }
+  .chip input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+  .chip > span { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-weight: 500; line-height: 1.25; transition: background .12s, border-color .12s, color .12s; }
+  .chip:hover > span { border-color: var(--accent); }
+  .chip input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .ko { font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--bad); }
+  .chip input:checked + span .ko { color: inherit; opacity: .85; }
+  .quick { background: var(--surface-2); border: 1px solid transparent; border-radius: 8px; padding: 6px 10px; font-size: 13px; font-weight: 600; cursor: pointer; min-height: 34px; }
+  .quick:hover { border-color: var(--accent); }
+  .quick[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+
+  /* Calificar layout */
+  .calificar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (min-width: 960px) { .calificar { grid-template-columns: minmax(0, 1fr) 390px; gap: 24px; } }
+  .form { display: grid; gap: 12px; }
+  .formhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 36px; }
+  .editando { font-size: 13px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 6px; }
+  .contacto { display: grid; gap: 12px; }
+
+  .q { display: grid; gap: 10px; }
+  .qhead { display: flex; align-items: baseline; gap: 10px; }
+  .qnum { font-family: var(--display); font-weight: 700; font-size: 14px; letter-spacing: .04em; font-variant-numeric: tabular-nums; color: var(--muted); background: var(--surface-2); border-radius: 6px; padding: 1px 7px; flex: none; }
+  .q.answered .qnum { background: var(--accent-soft); color: var(--accent); }
+  .qtitle { font-size: 17px; font-weight: 700; line-height: 1.3; }
+  .decir { color: var(--muted); font-style: italic; }
+
+  /* Ticket */
+  .ticket { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+  @media (min-width: 960px) {
+    .ticket { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px); overflow: auto; }
+  }
+  .board { background: var(--board); color: var(--board-ink); padding: 16px 18px 14px; }
+  .board-top { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--board-muted); }
+  .score { font-variant-numeric: tabular-nums; color: var(--board-ink); font-size: 18px; letter-spacing: .04em; }
+  .verdict { font-family: var(--display); font-weight: 700; text-transform: uppercase; font-size: 34px; letter-spacing: .03em; line-height: 1.05; margin-block: 8px 14px; display: flex; align-items: center; gap: 12px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--board-muted); flex: none; }
+  .ticket[data-v="califica"] { --vc: var(--b-good); }
+  .ticket[data-v="seguimiento"] { --vc: var(--b-warn); }
+  .ticket[data-v="no_aplica"] { --vc: var(--b-bad); }
+  .ticket[data-v="incompleto"] { --vc: var(--board-muted); }
+  .ticket .dot { background: var(--vc); }
+  .ticket[data-v="califica"] .verdict, .ticket[data-v="seguimiento"] .verdict, .ticket[data-v="no_aplica"] .verdict { color: var(--vc); }
+  .meter { display: grid; gap: 3px; }
+  .meter i { height: 14px; border-radius: 2px; background: var(--cell); }
+  .meter i.on { background: var(--vc); }
+  .meter i.gap { margin-left: 5px; }
+  .meter-legend { display: grid; margin-top: 6px; font-size: 12px; font-weight: 600; color: var(--board-muted); }
+  .meter-legend span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .meter-legend span:not(:first-child) { padding-left: 5px; }
+
+  .tbody { padding: 16px 18px; display: grid; gap: 12px; }
+  .consejo { font-weight: 600; }
+  .motivos { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 14px; }
+  .motivos li { display: flex; gap: 8px; align-items: baseline; }
+  .motivos li::before { content: ''; width: 8px; height: 8px; border-radius: 2px; flex: none; transform: translateY(-1px); background: var(--muted); }
+  .motivos .m-good::before { background: var(--good); }
+  .motivos .m-warn::before { background: var(--warn); }
+  .motivos .m-bad::before { background: var(--bad); }
+  .motivos .m-note { color: var(--muted); }
+  .motivos .m-note::before { background: transparent; border: 1.5px solid var(--muted); }
+
+  .perf { position: relative; border-top: 2px dashed var(--line); margin-inline: 18px; }
+  .perf::before, .perf::after { content: ''; position: absolute; top: -12px; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line); }
+  .perf::before { left: -30px; }
+  .perf::after { right: -30px; }
+
+  .agenda h2 { display: flex; gap: 6px; flex-wrap: wrap; }
+  .quickrow { display: flex; flex-wrap: wrap; gap: 6px; }
+  .acciones { display: grid; gap: 8px; }
+  .callout { font-size: 14px; background: var(--warn-soft); color: var(--ink); border-radius: 10px; padding: 10px 12px; display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .mensajes summary { cursor: pointer; font-weight: 600; color: var(--accent); font-size: 14px; }
+  .msg { margin-top: 10px; display: grid; gap: 6px; }
+  .msg pre { margin: 0; white-space: pre-wrap; word-break: break-word; font: 13px/1.45 var(--body); background: var(--surface-2); border-radius: 8px; padding: 10px 12px; max-height: 220px; overflow: auto; }
+  .msg-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+
+  /* Bottom bar (mobile) */
+  .bottombar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--board); color: var(--board-ink); padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 12px; box-shadow: 0 -6px 20px rgba(0, 0, 0, .18); }
+  .bottombar .bb-v { font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: .03em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+  .bottombar .bb-v span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bottombar .bb-score { font-variant-numeric: tabular-nums; color: var(--board-muted); font-weight: 600; }
+  .bottombar .btn { background: var(--board-ink); color: var(--board); min-height: 40px; }
+  @media (min-width: 960px) { .bottombar { display: none; } }
+
+  /* Prospectos */
+  .listhead { display: grid; gap: 14px; margin-bottom: 14px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 6px 22px; color: var(--muted); }
+  .stats b { font-family: var(--display); font-size: 26px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; margin-right: 4px; }
+  .listtools { display: flex; gap: 8px; flex-wrap: wrap; }
+  .listtools input { flex: 1 1 220px; }
+  .leads { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .lead { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 12px; }
+  @media (min-width: 760px) { .lead { grid-template-columns: minmax(0, 1fr) auto; align-items: center; } }
+  .lead-top { display: flex; gap: 8px 10px; align-items: center; flex-wrap: wrap; }
+  .lead h3 { font-size: 17px; }
+  .meta { color: var(--muted); font-size: 14px; }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .lead-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .lead-actions select { width: auto; min-height: 36px; padding: 6px 10px; font-size: 14px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; font-variant-numeric: tabular-nums; }
+  .pill.califica { background: var(--good-soft); color: var(--good); }
+  .pill.seguimiento { background: var(--warn-soft); color: var(--warn); }
+  .pill.no_aplica { background: var(--bad-soft); color: var(--bad); }
+  .pill.incompleto { background: var(--surface-2); color: var(--muted); }
+  .empty { text-align: center; color: var(--muted); padding: 40px 16px; border: 1px dashed var(--line); border-radius: 12px; }
+  #tsv-fallback { width: 100%; min-height: 120px; margin-top: 10px; font: 12px/1.4 ui-monospace, Menlo, monospace; }
+
+  /* Guion */
+  .guion { display: grid; gap: 16px; max-width: 760px; }
+  .guion h2 { font-family: var(--display); font-weight: 700; font-size: 24px; letter-spacing: .01em; }
+  .guion .card { display: grid; gap: 10px; }
+  .say { font-size: 16px; line-height: 1.55; padding-left: 14px; border-left: 3px solid var(--accent); }
+  .tip { color: var(--muted); font-size: 14px; }
+  .gq { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .gq:first-of-type { border-top: 0; padding-top: 0; }
+  .gq h3 { font-size: 16px; }
+  .signals { display: grid; gap: 4px; font-size: 14px; }
+  .signals b { font-weight: 600; }
+  .obj { display: grid; gap: 4px; }
+  .obj dt { font-weight: 700; }
+  .obj dd { margin: 0 0 10px; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  td.pts { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+
+  /* Ajustes */
+  .settings { display: grid; gap: 16px; max-width: 760px; }
+  .settings h2 { font-family: var(--display); font-weight: 700; font-size: 24px; }
+  .settings .card { display: grid; gap: 12px; }
+
+  .toast { position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 30; background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 14px; max-width: calc(100% - 32px); box-shadow: var(--shadow); }
+  .toast[data-t="bad"] { background: var(--bad); color: #fff; }
+  @media (min-width: 960px) { .toast { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
+</style>
+
+<div class="app with-bar" id="app">
+  <header class="top">
+    <div>
+      <p class="eyebrow">FIT 2026 · La Rural · 26 al 29 de septiembre</p>
+      <h1>Filtro de prospectos</h1>
+      <p class="sub">Hacé las 6 preguntas, mirá si el prospecto califica y agendá la reunión con <span data-colega>tu colega</span> en el momento.</p>
+    </div>
+    <p class="sync" id="sync" role="status">Conectando…</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button class="tab" role="tab" id="tab-calificar" data-tab="calificar" aria-controls="panel-calificar" aria-selected="true">Calificar</button>
+    <button class="tab" role="tab" id="tab-prospectos" data-tab="prospectos" aria-controls="panel-prospectos" aria-selected="false">Prospectos <span class="count" id="tab-count">0</span></button>
+    <button class="tab" role="tab" id="tab-guion" data-tab="guion" aria-controls="panel-guion" aria-selected="false">Guion</button>
+    <button class="tab" role="tab" id="tab-ajustes" data-tab="ajustes" aria-controls="panel-ajustes" aria-selected="false">Ajustes</button>
+  </nav>
+
+  <!-- CALIFICAR -->
+  <section id="panel-calificar" role="tabpanel" aria-labelledby="tab-calificar">
+    <div class="calificar" id="calificar">
+      <div class="form" id="form">
+        <div class="formhead">
+          <p class="editando" id="editando" hidden></p>
+          <span></span>
+          <button type="button" class="btn ghost small" id="btn-nuevo">Nuevo prospecto</button>
+        </div>
+
+        <div class="card contacto" role="group" aria-labelledby="lbl-contacto">
+          <h2 class="label" id="lbl-contacto">Contacto</h2>
+          <div class="grid2">
+            <label class="field"><span>Nombre</span><input type="text" id="f-nombre" autocomplete="off" placeholder="Laura Méndez"></label>
+            <label class="field"><span>Empresa</span><input type="text" id="f-empresa" autocomplete="off" placeholder="Viajes del Sur"></label>
+            <label class="field"><span>Cargo</span><input type="text" id="f-cargo" autocomplete="off" placeholder="Socia gerente"></label>
+            <label class="field"><span>Ciudad</span><input type="text" id="f-ciudad" autocomplete="off" placeholder="Rosario"></label>
+            <label class="field"><span>WhatsApp</span><input type="tel" id="f-whatsapp" inputmode="tel" autocomplete="off" placeholder="11 5555 1234"><small class="hint" id="f-whatsapp-hint">Con código de área, sin 0 ni 15.</small></label>
+            <label class="field"><span>Email</span><input type="email" id="f-email" inputmode="email" autocomplete="off" placeholder="laura@viajesdelsur.com.ar"></label>
+          </div>
+        </div>
+
+        <div id="preguntas" class="form"></div>
+
+        <div class="card q" role="group" aria-labelledby="lbl-dolores">
+          <div class="qhead"><span class="qnum">+</span><span class="qtitle" id="lbl-dolores">¿Qué le cuesta más hoy?</span></div>
+          <p class="decir">“De todo lo que hacen en el día a día, ¿qué es lo que más tiempo les lleva?”</p>
+          <div class="chips" id="dolores"></div>
+        </div>
+
+        <label class="card field">
+          <span class="label">Notas para <span data-colega>tu colega</span></span>
+          <textarea id="f-notas" rows="3" placeholder="Ej.: tienen 3 sucursales, facturan a mano y venden mucho en dólares."></textarea>
+        </label>
+      </div>
+
+      <aside class="ticket" id="ticket" data-v="incompleto" aria-labelledby="t-verdict">
+        <div class="board">
+          <div class="board-top"><span>Resultado</span><span class="score" id="t-score">0/18</span></div>
+          <p class="verdict" id="t-verdict"><span class="dot"></span><span id="t-verdict-text">Faltan 6 respuestas</span></p>
+          <div class="meter" id="t-meter" aria-hidden="true"></div>
+          <div class="meter-legend" id="t-legend" aria-hidden="true"><span>No aplica</span><span>Seguimiento</span><span>Reunión</span></div>
+        </div>
+        <div class="tbody">
+          <p class="consejo" id="t-consejo"></p>
+          <ul class="motivos" id="t-motivos"></ul>
+        </div>
+        <div class="perf" aria-hidden="true"></div>
+        <div class="tbody agenda" id="agenda">
+          <h2 class="label">Agendar con <span data-colega>tu colega</span></h2>
+          <div class="callout" id="callout-colega" hidden>
+            <span>Cargá el WhatsApp de tu colega para pasarle cada prospecto con un toque.</span>
+            <button type="button" class="btn small outline" data-goto="ajustes">Ir a Ajustes</button>
+          </div>
+          <div class="field">
+            <span class="field-label">Día</span>
+            <div class="quickrow" id="quickdays"></div>
+            <input type="date" id="f-fecha" aria-label="Día de la reunión">
+          </div>
+          <div class="field">
+            <span class="field-label">Hora</span>
+            <div class="quickrow" id="quickhours"></div>
+            <input type="time" id="f-hora" step="900" aria-label="Hora de la reunión">
+          </div>
+          <div class="field" role="radiogroup" aria-labelledby="lbl-modalidad">
+            <span class="field-label" id="lbl-modalidad">Modalidad</span>
+            <div class="chips" id="modalidades"></div>
+          </div>
+          <div class="acciones">
+            <a class="btn wa" id="a-colega" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>
+              <span>Pasar a <span data-colega>tu colega</span></span>
+            </a>
+            <a class="btn outline" id="a-prospecto" target="_blank" rel="noopener">Confirmar al prospecto por WhatsApp</a>
+            <a class="btn outline" id="a-cal" target="_blank" rel="noopener">Agregar a Google Calendar</a>
+            <button type="button" class="btn primary" id="btn-guardar">Guardar prospecto</button>
+          </div>
+          <details class="mensajes">
+            <summary>Ver y copiar los mensajes</summary>
+            <div class="msg">
+              <div class="msg-head"><span>Para <span data-colega>tu colega</span></span><button type="button" class="btn ghost small" data-copy="m-colega">Copiar</button></div>
+              <pre id="m-colega"></pre>
+            </div>
+            <div class="msg">
+              <div class="msg-head"><span>Para el prospecto</span><button type="button" class="btn ghost small" data-copy="m-prospecto">Copiar</button></div>
+              <pre id="m-prospecto"></pre>
+            </div>
+          </details>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- PROSPECTOS -->
+  <section id="panel-prospectos" role="tabpanel" aria-labelledby="tab-prospectos" hidden>
+    <div class="listhead">
+      <div class="stats" id="stats"></div>
+      <div class="chips" id="filtros" role="group" aria-label="Filtrar por resultado"></div>
+      <div class="listtools">
+        <input type="search" id="buscar" placeholder="Buscar empresa, nombre o ciudad" aria-label="Buscar">
+        <button type="button" class="btn outline" id="btn-tsv">Copiar para planilla</button>
+      </div>
+      <textarea id="tsv-fallback" readonly hidden aria-label="Tabla para copiar"></textarea>
+    </div>
+    <ul class="leads" id="leads"></ul>
+  </section>
+
+  <!-- GUION -->
+  <section id="panel-guion" role="tabpanel" aria-labelledby="tab-guion" hidden>
+    <div class="guion">
+      <p class="tip">Una base para el stand. Si con <span data-colega>tu colega</span> definieron otro perfil de cliente, ajustá las preguntas y los puntajes al principio del código de esta página.</p>
+
+      <div class="card">
+        <h2>Apertura</h2>
+        <p class="say">“Hola, ¿cómo va? ¿Trabajás en turismo? Estamos mostrando <span data-producto>Odoo</span>, un sistema de gestión que junta ventas, reservas, cobros y facturación en un solo lugar. ¿Te hago unas preguntas rápidas para ver si le sirve a tu empresa?”</p>
+        <p class="tip">Si está paseando o no trabaja en turismo, agradecé y seguí. El tiempo del stand es para quien puede comprar.</p>
+      </div>
+
+      <div class="card">
+        <h2>Las preguntas del filtro</h2>
+        <div id="g-preguntas"></div>
+      </div>
+
+      <div class="card">
+        <h2>Cierre para agendar</h2>
+        <p class="say">“Por lo que me contás, tiene sentido que lo veas con <span data-colega>mi colega</span>, que es quien arma la propuesta. Son 30 minutos y lo ves aplicado a tu empresa. ¿Te queda mejor <span id="g-dia-a">el martes</span> o <span id="g-dia-b">el jueves</span>?”</p>
+        <p class="tip">Ofrecé dos opciones concretas. Cargá día y hora en Calificar y mandá los dos WhatsApp con la persona adelante: así confirma en el momento.</p>
+      </div>
+
+      <div class="card">
+        <h2>Si queda en seguimiento</h2>
+        <p class="say">“Te paso info por WhatsApp y te escribimos después de la feria para ver si tiene sentido una reunión.”</p>
+        <p class="tip">Guardalo igual. <span data-colega>Tu colega</span> decide si lo llama.</p>
+      </div>
+
+      <div class="card">
+        <h2>Si no aplica</h2>
+        <p class="say">“Gracias por pasar. Si en algún momento cambian las cosas, acá tenés nuestro contacto.”</p>
+        <p class="tip">No agendes. Una reunión con alguien que no califica le saca un turno a alguien que sí.</p>
+      </div>
+
+      <div class="card">
+        <h2>Objeciones frecuentes</h2>
+        <dl class="obj">
+          <dt>“Ya tenemos un sistema.”</dt>
+          <dd>“Bárbaro. ¿Y qué es lo que hoy te sigue llevando más tiempo, aunque lo tengas?”</dd>
+          <dt>“¿Cuánto sale?”</dt>
+          <dd>“Depende de cuántos usuarios y qué módulos uses, más la implementación. En la reunión <span data-colega>mi colega</span> te da el número exacto para tu caso.”</dd>
+          <dt>“Mandame info por mail.”</dt>
+          <dd>“Te la mando. Y para que no quede en un PDF más, ¿te reservo 30 minutos con <span data-colega>mi colega</span> para verlo con tu caso?”</dd>
+          <dt>“¿Odoo sirve para turismo?”</dt>
+          <dd>“Sí. Trae CRM, ventas, facturación electrónica, cobranzas en pesos y dólares y compras a proveedores. Lo que es propio de tu operación se configura o se desarrolla a medida.”</dd>
+          <dt>“Ahora no tengo tiempo.”</dt>
+          <dd>“Por eso te propongo después de la feria. ¿Qué día te queda mejor?”</dd>
+        </dl>
+      </div>
+
+      <div class="card">
+        <h2>Cómo se calcula el resultado</h2>
+        <p id="g-umbrales"></p>
+        <div class="tablewrap"><table id="g-tabla"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AJUSTES -->
+  <section id="panel-ajustes" role="tabpanel" aria-labelledby="tab-ajustes" hidden>
+    <div class="settings">
+      <div class="card">
+        <h2>Tu equipo</h2>
+        <p class="tip">Con estos datos se arman los mensajes de WhatsApp y el evento de calendario.</p>
+        <div class="grid2">
+          <label class="field"><span>Tu nombre</span><input type="text" id="c-miNombre" autocomplete="off" placeholder="Hassen"></label>
+          <label class="field"><span>Nombre de tu colega</span><input type="text" id="c-colegaNombre" autocomplete="off" placeholder="Martín"></label>
+          <label class="field"><span>WhatsApp de tu colega</span><input type="tel" id="c-colegaWhatsapp" inputmode="tel" autocomplete="off" placeholder="11 5555 1234"><small class="hint" id="c-colegaWhatsapp-hint">Con código de área, sin 0 ni 15.</small></label>
+          <label class="field"><span>Email de tu colega</span><input type="email" id="c-colegaEmail" inputmode="email" autocomplete="off" placeholder="martin@empresa.com"></label>
+        </div>
+        <div class="grid2">
+          <label class="field"><span>Cómo nombrás el sistema ante el cliente</span><input type="text" id="c-producto" autocomplete="off" placeholder="Odoo"></label>
+          <label class="field"><span>Link de tu página (va en el mensaje al prospecto)</span><input type="url" id="c-landing" autocomplete="off" placeholder="https://hcalchei.github.io/Catalogo/odoo/"></label>
+        </div>
+        <div><button type="button" class="btn primary" id="btn-cfg">Guardar ajustes</button></div>
+      </div>
+      <div class="card">
+        <h2>Dónde se guardan los prospectos</h2>
+        <p id="modo-explica" class="tip"></p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="bottombar" id="bottombar" data-v="incompleto">
+  <div class="bb-v"><span class="dot" id="bb-dot"></span><span id="bb-text">Faltan 6 respuestas</span></div>
+  <span class="bb-score" id="bb-score">0/18</span>
+  <button type="button" class="btn small" id="bb-go">Ver</button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(() => {
+  'use strict';
+
+  /* =========================================================
+     CRITERIOS DEL FILTRO — editá acá preguntas, opciones y puntos.
+     p: puntos (0 a 3). ko: si se elige, el prospecto no aplica.
+     nota: recordatorio que aparece en el resultado.
+     ========================================================= */
+  const FERIA = 'FIT 2026';
+  const PREGUNTAS = [
+    { id: 'rubro', corto: 'Rubro', titulo: '¿A qué se dedica la empresa?',
+      decir: 'Contame, ¿a qué se dedican?',
+      opciones: [
+        { v: 'agencia', t: 'Agencia de viajes', p: 3 },
+        { v: 'operador', t: 'Operador mayorista o receptivo', p: 3 },
+        { v: 'alojamiento', t: 'Hotel o alojamiento', p: 3 },
+        { v: 'excursiones', t: 'Excursiones, transporte o traslados', p: 3 },
+        { v: 'otro_turismo', t: 'Otro negocio de turismo', p: 2 },
+        { v: 'no_empresa', t: 'Particular, estudiante o curioso', p: 0, ko: 'No es una empresa' }
+      ] },
+    { id: 'tamano', corto: 'Equipo', titulo: '¿Cuántas personas trabajan?',
+      decir: '¿Cuántos son en el equipo, contando sucursales?',
+      opciones: [
+        { v: '1', t: 'Solo el dueño', p: 1 },
+        { v: '2-5', t: '2 a 5', p: 2 },
+        { v: '6-20', t: '6 a 20', p: 3 },
+        { v: '21-100', t: '21 a 100', p: 3 },
+        { v: '100+', t: 'Más de 100', p: 2, nota: 'Empresa grande: avisale a tu colega que puede necesitar un proyecto a medida.' }
+      ] },
+    { id: 'gestion', corto: 'Hoy usa', titulo: '¿Cómo registran hoy ventas, reservas y cobros?',
+      decir: 'Cuando entra una venta, ¿dónde la anotan?',
+      opciones: [
+        { v: 'manual', t: 'Excel, papel o WhatsApp', p: 3 },
+        { v: 'varios', t: 'Varios sistemas que no se hablan', p: 3 },
+        { v: 'viejo', t: 'Un sistema viejo o hecho a medida', p: 2 },
+        { v: 'conforme', t: 'Un sistema que les funciona bien', p: 0, nota: 'Antes de descartar, preguntá qué le falta al sistema actual.' }
+      ] },
+    { id: 'rol', corto: 'Decisión', titulo: '¿Qué rol tiene en la decisión?',
+      decir: 'Si esto les sirve, ¿quién más participa de la decisión?',
+      opciones: [
+        { v: 'decide', t: 'Decide (dueño, socio, gerente general)', p: 3 },
+        { v: 'influye', t: 'Influye (gerente de área, administración)', p: 2 },
+        { v: 'sin_decision', t: 'No decide', p: 0, nota: 'Pedile el contacto de quien decide e invitalo a la reunión.' }
+      ] },
+    { id: 'urgencia', corto: 'Urgencia', titulo: '¿Cuándo quieren resolverlo?',
+      decir: '¿Es algo que quieren resolver ahora o más adelante?',
+      opciones: [
+        { v: 'ya', t: 'Ahora o este trimestre', p: 3 },
+        { v: '3-6m', t: 'En 3 a 6 meses', p: 2 },
+        { v: 'sin_fecha', t: 'Sin fecha, solo mirando', p: 0, nota: 'Ofrecé mandarle info y retomar en 30 días.' }
+      ] },
+    { id: 'presupuesto', corto: 'Inversión', titulo: '¿Está dispuesto a invertir en un sistema?',
+      decir: 'Un sistema así tiene un abono mensual. ¿Es algo que evaluarían?',
+      opciones: [
+        { v: 'si', t: 'Sí, ya lo tienen previsto', p: 3 },
+        { v: 'evalua', t: 'Lo evalúa si ve el ahorro', p: 2 },
+        { v: 'no', t: 'No quiere pagar o busca algo gratis', p: 0, ko: 'No quiere invertir' }
+      ] }
+  ];
+  const DOLORES = [
+    'Reservas y ventas dispersas',
+    'Facturación electrónica (ARCA)',
+    'Cobranzas y cuentas corrientes',
+    'Pagos a operadores y proveedores',
+    'Caja en pesos y dólares',
+    'Rentabilidad por venta',
+    'Seguimiento de clientes'
+  ];
+  const UMBRAL_REUNION = 13;     // desde este puntaje: agendar reunión
+  const UMBRAL_SEGUIMIENTO = 8;  // desde este puntaje: seguimiento
+  const DURACION_MIN = 30;
+  const MODALIDADES = [
+    { v: 'video', t: 'Videollamada', frase: 'por videollamada' },
+    { v: 'stand', t: 'En el stand', frase: 'en nuestro stand de la FIT' },
+    { v: 'oficina', t: 'En su oficina', frase: 'en tu oficina' }
+  ];
+  const HORAS = ['10:00', '11:30', '15:00', '17:00'];
+  const ESTADOS = [
+    { v: 'nuevo', t: 'Sin agendar' },
+    { v: 'agendada', t: 'Reunión agendada' },
+    { v: 'realizada', t: 'Reunión hecha' },
+    { v: 'descartado', t: 'Descartado' }
+  ];
+  /* ========================================================= */
+
+  const MAX = PREGUNTAS.reduce((s, q) => s + Math.max(...q.opciones.map(o => o.p)), 0);
+  const VEREDICTOS = {
+    califica: { t: 'Agendar reunión', corto: 'Reunión' },
+    seguimiento: { t: 'Seguimiento', corto: 'Seguimiento' },
+    no_aplica: { t: 'No aplica', corto: 'No aplica' },
+    incompleto: { t: 'Incompleto', corto: 'Incompleto' }
+  };
+  const LANDING_URL = 'https://hcalchei.github.io/Catalogo/odoo/';  // página que se comparte con el prospecto
+  const CONFIG_DEFAULT = { miNombre: '', colegaNombre: '', colegaWhatsapp: '', colegaEmail: '', producto: '', landing: '' };
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const p2 = n => String(n).padStart(2, '0');
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  const lsDel = k => { try { localStorage.removeItem(k); } catch (e) { /* sin almacenamiento */ } };
+  const opcion = (qid, v) => { const q = PREGUNTAS.find(x => x.id === qid); return q ? q.opciones.find(o => o.v === v) : undefined; };
+  const modalidad = v => MODALIDADES.find(m => m.v === v) || MODALIDADES[0];
+  const sinAcentos = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+  let config = { ...CONFIG_DEFAULT };
+  let leads = [];
+  let filtro = 'todos';
+  let store = null;
+  let resolveStore;
+  const storeReady = new Promise(r => { resolveStore = r; });
+
+  /* ---------- Teléfonos y fechas ---------- */
+  function normTel(raw) {
+    let d = String(raw || '').replace(/\D/g, '');
+    if (!d) return '';
+    d = d.replace(/^00/, '');
+    if (d.startsWith('54')) {
+      if (!d.startsWith('549') && d.length === 12) d = '549' + d.slice(2);
+      return d;
+    }
+    if (d.startsWith('0')) d = d.slice(1);
+    if (d.length === 10) return '549' + d;
+    if (d.length === 12) {
+      for (const L of [2, 3, 4]) {
+        if (d.substr(L, 2) === '15') return '549' + d.slice(0, L) + d.slice(L + 2);
+      }
+    }
+    return d.length >= 8 ? d : '';
+  }
+  const emailOk = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || '').trim());
+  function parseFecha(f) { const [y, m, d] = f.split('-').map(Number); return new Date(y, m - 1, d); }
+  function ymd(d) { return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()); }
+  const fmtCorto = new Intl.DateTimeFormat('es-AR', { weekday: 'short', day: 'numeric', month: 'short' });
+  const fmtLargo = new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+  const fmtCarga = new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  function fechaTexto(f, h, largo) {
+    if (!f) return '';
+    const t = (largo ? fmtLargo : fmtCorto).format(parseFecha(f)).replace(/\.$/, '');
+    return h ? `${t}, ${h} h` : t;
+  }
+  function proximosHabiles(n) {
+    const out = [];
+    const d = new Date(); d.setHours(0, 0, 0, 0);
+    while (out.length < n) {
+      d.setDate(d.getDate() + 1);
+      if (d.getDay() !== 0 && d.getDay() !== 6) out.push(new Date(d));
+    }
+    return out;
+  }
+  const colega = (fallback) => config.colegaNombre.trim() || fallback;
+  const producto = () => config.producto.trim() || 'Odoo';
+  const landing = () => (config.landing || '').trim() || LANDING_URL;
+
+  /* ---------- Evaluación ---------- */
+  function evaluar(resp) {
+    let score = 0, answered = 0;
+    const ko = [], motivos = [];
+    let siguiente = null;
+    for (const q of PREGUNTAS) {
+      const o = q.opciones.find(x => x.v === resp[q.id]);
+      if (!o) { if (!siguiente) siguiente = q; continue; }
+      answered++;
+      score += o.p;
+      const max = Math.max(...q.opciones.map(x => x.p));
+      if (o.ko) { ko.push(o.ko); motivos.push({ c: 'm-bad', t: `${q.corto}: ${o.t}` }); }
+      else if (o.p === 0) motivos.push({ c: 'm-warn', t: `${q.corto}: ${o.t}` });
+      else if (o.p === max) motivos.push({ c: 'm-good', t: `${q.corto}: ${o.t}` });
+      if (o.nota) motivos.push({ c: 'm-note', t: o.nota });
+    }
+    const faltan = PREGUNTAS.length - answered;
+    let v;
+    let sinDecisor = false;
+    if (ko.length) v = 'no_aplica';
+    else if (faltan > 0) v = 'incompleto';
+    else if (score >= UMBRAL_REUNION) {
+      sinDecisor = resp.rol === 'sin_decision';
+      v = sinDecisor ? 'seguimiento' : 'califica';
+    }
+    else if (score >= UMBRAL_SEGUIMIENTO) v = 'seguimiento';
+    else v = 'no_aplica';
+    const orden = { 'm-bad': 0, 'm-warn': 1, 'm-note': 2, 'm-good': 3 };
+    motivos.sort((a, b) => orden[a.c] - orden[b.c]);
+    return { score, answered, faltan, v, ko, motivos, siguiente, sinDecisor };
+  }
+  function consejo(ev) {
+    if (ev.v === 'incompleto') return ev.siguiente ? `Seguí con: ${ev.siguiente.titulo}` : '';
+    if (ev.v === 'califica') return `Cumple el perfil. Proponé dos horarios y pasale el contacto a ${colega('tu colega')}.`;
+    if (ev.v === 'seguimiento' && ev.sinDecisor) return 'El puntaje da para reunión, pero no habla con quien decide. Pedile ese contacto y agendá con esa persona.';
+    if (ev.v === 'seguimiento') return 'Hay interés pero todavía no está para reunión. Guardalo, mandale info y retomá después de la feria.';
+    if (ev.ko.length) return `Descartado por: ${ev.ko.join(', ').toLowerCase()}. Agradecé la charla y cerrá amable.`;
+    return 'Puntaje bajo. Agradecé la charla y cerrá sin agendar.';
+  }
+  function veredictoTexto(ev) {
+    if (ev.v === 'incompleto') return ev.faltan === 1 ? 'Falta 1 respuesta' : `Faltan ${ev.faltan} respuestas`;
+    return VEREDICTOS[ev.v].t;
+  }
+
+  /* ---------- Formulario ---------- */
+  const formVacio = () => ({ id: null, createdAt: null, estado: 'nuevo', nombre: '', empresa: '', cargo: '', ciudad: '', whatsapp: '', email: '', resp: {}, dolores: [], notas: '', fecha: '', hora: '', modalidad: MODALIDADES[0].v });
+  let form = formVacio();
+  let guardadoHash = null;
+
+  function renderPreguntas() {
+    $('#preguntas').innerHTML = PREGUNTAS.map((q, i) => `
+      <div class="card q" id="q-${q.id}" role="radiogroup" aria-labelledby="qt-${q.id}">
+        <div class="qhead"><span class="qnum">${i + 1}/${PREGUNTAS.length}</span><span class="qtitle" id="qt-${q.id}">${esc(q.titulo)}</span></div>
+        <p class="decir">“${esc(q.decir)}”</p>
+        <div class="chips">${q.opciones.map(o => `
+          <label class="chip"><input type="radio" name="q-${q.id}" id="q-${q.id}-${o.v}" value="${esc(o.v)}"><span>${esc(o.t)}${o.ko ? ' <em class="ko">descarta</em>' : ''}</span></label>`).join('')}
+        </div>
+      </div>`).join('');
+    $('#dolores').innerHTML = DOLORES.map((d, i) => `
+      <label class="chip"><input type="checkbox" id="dol-${i}" value="${esc(d)}"><span>${esc(d)}</span></label>`).join('');
+    $('#modalidades').innerHTML = MODALIDADES.map(m => `
+      <label class="chip"><input type="radio" name="modalidad" id="mod-${m.v}" value="${m.v}"><span>${esc(m.t)}</span></label>`).join('');
+    $('#quickdays').innerHTML = proximosHabiles(5).map(d => `<button type="button" class="quick" data-dia="${ymd(d)}" aria-pressed="false">${esc(fmtCorto.format(d).replace(/\.$/, ''))}</button>`).join('');
+    $('#quickhours').innerHTML = HORAS.map(h => `<button type="button" class="quick" data-hora="${h}" aria-pressed="false">${h}</button>`).join('');
+
+    const segs = [UMBRAL_SEGUIMIENTO - 1, UMBRAL_REUNION - UMBRAL_SEGUIMIENTO, MAX - UMBRAL_REUNION + 1];
+    $('#t-meter').style.gridTemplateColumns = `repeat(${MAX}, 1fr)`;
+    $('#t-meter').innerHTML = Array.from({ length: MAX }, (_, i) => `<i class="${i === UMBRAL_SEGUIMIENTO - 1 || i === UMBRAL_REUNION - 1 ? 'gap' : ''}"></i>`).join('');
+    $('#t-legend').style.gridTemplateColumns = segs.map(n => n + 'fr').join(' ');
+  }
+
+  function leerFormulario() {
+    for (const k of ['nombre', 'empresa', 'cargo', 'ciudad', 'whatsapp', 'email', 'notas', 'fecha', 'hora']) form[k] = $('#f-' + k).value;
+    const resp = {};
+    for (const q of PREGUNTAS) {
+      const c = document.querySelector(`input[name="q-${q.id}"]:checked`);
+      if (c) resp[q.id] = c.value;
+    }
+    form.resp = resp;
+    form.dolores = $$('#dolores input:checked').map(i => i.value);
+    const m = document.querySelector('input[name="modalidad"]:checked');
+    form.modalidad = m ? m.value : MODALIDADES[0].v;
+  }
+
+  function escribirFormulario() {
+    for (const k of ['nombre', 'empresa', 'cargo', 'ciudad', 'whatsapp', 'email', 'notas', 'fecha', 'hora']) $('#f-' + k).value = form[k] || '';
+    for (const q of PREGUNTAS) {
+      for (const o of q.opciones) {
+        const el = document.getElementById(`q-${q.id}-${o.v}`);
+        if (el) el.checked = form.resp[q.id] === o.v;
+      }
+    }
+    $$('#dolores input').forEach(i => { i.checked = (form.dolores || []).includes(i.value); });
+    MODALIDADES.forEach(m => { document.getElementById('mod-' + m.v).checked = form.modalidad === m.v; });
+    const ed = $('#editando');
+    ed.hidden = !form.id;
+    ed.textContent = form.id ? `Editando: ${form.empresa || form.nombre || 'prospecto guardado'}` : '';
+  }
+
+  function datosParaGuardar() {
+    const ev = evaluar(form.resp);
+    let estado = form.estado || 'nuevo';
+    if (estado === 'nuevo' && form.fecha && form.hora) estado = 'agendada';
+    return {
+      feria: FERIA,
+      nombre: form.nombre.trim(), empresa: form.empresa.trim(), cargo: form.cargo.trim(), ciudad: form.ciudad.trim(),
+      whatsapp: form.whatsapp.trim(), email: form.email.trim(),
+      respuestas: { ...form.resp }, dolores: [...form.dolores], notas: form.notas.trim(),
+      score: ev.score, max: MAX, veredicto: ev.v,
+      reunion: form.fecha ? { fecha: form.fecha, hora: form.hora, modalidad: form.modalidad } : null,
+      estado
+    };
+  }
+  const hashDe = d => JSON.stringify(d);
+  const tieneDatos = () => !!(form.nombre || form.empresa || form.whatsapp || Object.keys(form.resp).length);
+
+  let draftTimer = null;
+  function guardarBorrador() {
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(() => lsSet('fit26.borrador', { form, guardadoHash }), 300);
+  }
+
+  /* ---------- Mensajes y enlaces ---------- */
+  function msgColega() {
+    const ev = evaluar(form.resp);
+    const L = [];
+    L.push(`*Prospecto ${FERIA} · ${VEREDICTOS[ev.v].corto} (${ev.score}/${MAX})*`);
+    const rubro = opcion('rubro', form.resp.rubro);
+    const tam = opcion('tamano', form.resp.tamano);
+    const extra = [rubro && rubro.t, tam && `${tam.t} personas`.replace('Solo el dueño personas', 'solo el dueño')].filter(Boolean).join(', ');
+    L.push(`Empresa: ${form.empresa.trim() || '—'}${extra ? ` (${extra})` : ''}`);
+    L.push(`Contacto: ${[form.nombre.trim(), form.cargo.trim()].filter(Boolean).join(', ') || '—'}`);
+    const tel = normTel(form.whatsapp);
+    if (tel) L.push(`WhatsApp: +${tel}`);
+    if (form.email.trim()) L.push(`Email: ${form.email.trim()}`);
+    if (form.ciudad.trim()) L.push(`Ciudad: ${form.ciudad.trim()}`);
+    for (const q of PREGUNTAS) {
+      if (q.id === 'rubro' || q.id === 'tamano') continue;
+      const o = opcion(q.id, form.resp[q.id]);
+      if (o) L.push(`${q.corto}: ${o.t}`);
+    }
+    if (form.dolores.length) L.push(`Le cuesta: ${form.dolores.join(', ')}`);
+    L.push(form.fecha ? `Reunión: ${fechaTexto(form.fecha, form.hora, true)} · ${modalidad(form.modalidad).t}` : 'Reunión: a coordinar');
+    if (form.notas.trim()) L.push(`Notas: ${form.notas.trim()}`);
+    if (config.miNombre.trim()) L.push(`— ${config.miNombre.trim()}`);
+    return L.join('\n');
+  }
+  function msgProspecto() {
+    const primer = form.nombre.trim().split(/\s+/)[0];
+    const yo = config.miNombre.trim() ? `, soy ${config.miNombre.trim()}` : '';
+    const c = colega('mi colega');
+    let t = `Hola${primer ? ' ' + primer : ''}${yo}. Fue un gusto charlar en la FIT.`;
+    if (form.fecha && form.hora) {
+      t += ` Te confirmo la reunión con ${c} para ver ${producto()} aplicado a ${form.empresa.trim() || 'tu empresa'}: ${fechaTexto(form.fecha, form.hora, true)}, ${modalidad(form.modalidad).frase}. ¿Te queda bien?`;
+    } else {
+      t += ` Como quedamos, ${c} te va a escribir para coordinar una reunión y mostrarte ${producto()}. ¿Qué día y horario te quedan mejor?`;
+    }
+    if (landing()) t += `\n\nAcá tenés más info: ${landing()}`;
+    return t;
+  }
+  function calLink() {
+    if (!form.fecha || !form.hora) return null;
+    const [y, m, d] = form.fecha.split('-').map(Number);
+    const [hh, mm] = form.hora.split(':').map(Number);
+    const ini = new Date(y, m - 1, d, hh, mm);
+    const fin = new Date(ini.getTime() + DURACION_MIN * 60000);
+    const f = dt => `${dt.getFullYear()}${p2(dt.getMonth() + 1)}${p2(dt.getDate())}T${p2(dt.getHours())}${p2(dt.getMinutes())}00`;
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: `Reunión ${form.empresa.trim() || form.nombre.trim() || 'prospecto FIT'} · ${colega('Ventas')}`,
+      dates: `${f(ini)}/${f(fin)}`,
+      ctz: 'America/Argentina/Buenos_Aires',
+      details: msgColega().replace(/\*/g, ''),
+      location: modalidad(form.modalidad).t
+    });
+    const invitados = [form.email, config.colegaEmail].map(e => String(e || '').trim()).filter(emailOk);
+    if (invitados.length) params.set('add', invitados.join(','));
+    return 'https://calendar.google.com/calendar/render?' + params.toString();
+  }
+  function setLink(a, href, motivo) {
+    if (href) { a.href = href; a.removeAttribute('aria-disabled'); delete a.dataset.motivo; }
+    else { a.removeAttribute('href'); a.setAttribute('aria-disabled', 'true'); a.dataset.motivo = motivo; }
+  }
+  const waLink = (num, texto) => { const n = normTel(num); return n ? `https://wa.me/${n}?text=${encodeURIComponent(texto)}` : null; };
+
+  /* ---------- Actualizar pantalla ---------- */
+  function actualizar() {
+    const ev = evaluar(form.resp);
+    const t = $('#ticket');
+    t.dataset.v = ev.v;
+    $('#t-score').textContent = `${ev.score}/${MAX}`;
+    $('#t-verdict-text').textContent = veredictoTexto(ev);
+    $$('#t-meter i').forEach((c, i) => c.classList.toggle('on', i < ev.score));
+    $('#t-consejo').textContent = consejo(ev);
+    $('#t-motivos').innerHTML = ev.motivos.map(m => `<li class="${m.c}">${esc(m.t)}</li>`).join('');
+    PREGUNTAS.forEach(q => { const el = document.getElementById('q-' + q.id); if (el) el.classList.toggle('answered', !!form.resp[q.id]); });
+
+    const bb = $('#bottombar');
+    bb.style.setProperty('--vc', getComputedStyle(t).getPropertyValue('--vc'));
+    $('#bb-dot').style.background = 'var(--vc)';
+    $('#bb-text').textContent = veredictoTexto(ev);
+    $('#bb-score').textContent = `${ev.score}/${MAX}`;
+
+    const hint = $('#f-whatsapp-hint');
+    const tel = normTel(form.whatsapp);
+    hint.textContent = form.whatsapp.trim() ? (tel ? `Se envía a +${tel}` : 'Revisá el número') : 'Con código de área, sin 0 ni 15.';
+
+    const mc = msgColega(), mp = msgProspecto();
+    $('#m-colega').textContent = mc;
+    $('#m-prospecto').textContent = mp;
+    setLink($('#a-colega'), waLink(config.colegaWhatsapp, mc), 'Cargá el WhatsApp de tu colega en Ajustes.');
+    setLink($('#a-prospecto'), waLink(form.whatsapp, mp), 'Cargá el WhatsApp del prospecto.');
+    setLink($('#a-cal'), calLink(), 'Elegí día y hora para crear el evento.');
+    $('#callout-colega').hidden = !!normTel(config.colegaWhatsapp);
+
+    $$('#quickdays .quick').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dia === form.fecha)));
+    $$('#quickhours .quick').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.hora === form.hora)));
+
+    const sucio = hashDe(datosParaGuardar()) !== guardadoHash;
+    const bg = $('#btn-guardar');
+    bg.textContent = !sucio && form.id ? 'Guardado' : (form.id ? 'Guardar cambios' : 'Guardar prospecto');
+    guardarBorrador();
+  }
+
+  /* ---------- Guardar ---------- */
+  let guardando = null;
+  async function guardar({ silencioso = false } = {}) {
+    leerFormulario();
+    if (!form.empresa.trim() && !form.nombre.trim()) {
+      toast('Completá al menos el nombre o la empresa.', 'bad');
+      $('#f-nombre').focus();
+      return false;
+    }
+    if (guardando) await guardando.catch(() => {});
+    const data = datosParaGuardar();
+    const hash = hashDe(data);
+    if (form.id && hash === guardadoHash) { if (!silencioso) toast('Ya estaba guardado.'); return true; }
+    const now = new Date().toISOString();
+    const doc = { ...data, createdAt: form.createdAt || now, updatedAt: now };
+    guardando = (async () => {
+      await storeReady;
+      const id = await store.saveLead(form.id, doc);
+      form.id = id; form.createdAt = doc.createdAt; form.estado = doc.estado;
+      guardadoHash = hash;
+    })();
+    try {
+      await guardando;
+      escribirFormulario();
+      actualizar();
+      if (!silencioso) toast('Prospecto guardado.');
+      return true;
+    } catch (e) {
+      toast(mensajeError(e), 'bad');
+      return false;
+    } finally {
+      guardando = null;
+    }
+  }
+
+  let nuevoArmado = null;
+  function nuevoProspecto() {
+    const btn = $('#btn-nuevo');
+    const sucio = hashDe(datosParaGuardar()) !== guardadoHash;
+    if (tieneDatos() && sucio && !nuevoArmado) {
+      btn.textContent = 'Hay cambios sin guardar. Tocá de nuevo para descartar';
+      btn.classList.add('danger');
+      nuevoArmado = setTimeout(() => { nuevoArmado = null; btn.textContent = 'Nuevo prospecto'; btn.classList.remove('danger'); }, 4000);
+      return;
+    }
+    clearTimeout(nuevoArmado); nuevoArmado = null;
+    btn.textContent = 'Nuevo prospecto'; btn.classList.remove('danger');
+    form = formVacio(); guardadoHash = null;
+    lsDel('fit26.borrador');
+    escribirFormulario();
+    actualizar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    $('#f-nombre').focus({ preventScroll: true });
+  }
+
+  function editar(id) {
+    const l = leads.find(x => x.id === id);
+    if (!l) return;
+    form = {
+      id: l.id, createdAt: l.createdAt || null, estado: l.estado || 'nuevo',
+      nombre: l.nombre || '', empresa: l.empresa || '', cargo: l.cargo || '', ciudad: l.ciudad || '',
+      whatsapp: l.whatsapp || '', email: l.email || '',
+      resp: { ...(l.respuestas || {}) }, dolores: [...(l.dolores || [])], notas: l.notas || '',
+      fecha: (l.reunion && l.reunion.fecha) || '', hora: (l.reunion && l.reunion.hora) || '',
+      modalidad: (l.reunion && l.reunion.modalidad) || MODALIDADES[0].v
+    };
+    escribirFormulario();
+    guardadoHash = hashDe(datosParaGuardar());
+    actualizar();
+    irA('calificar');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ---------- Almacenamiento ---------- */
+  function mensajeError(e) {
+    const code = e && e.code;
+    if (code === 'invalid_argument') return 'No tenés permiso para guardar en esta página. Pedile al dueño acceso de Editor.';
+    if (code === 'quota_exceeded') return 'Se llenó el espacio de la base. Copiá la lista a una planilla y borrá prospectos viejos.';
+    if (code === 'resource_exhausted') return 'Demasiados cambios seguidos. Esperá unos segundos y volvé a intentar.';
+    if (code === 'revoked' || code === 'not_granted') return 'Esta vista ya no puede guardar. Recargá la página.';
+    return 'No se pudo guardar. Revisá la conexión y volvé a intentar.';
+  }
+  function dbStore(db) {
+    const col = db.collection('prospectos');
+    const cfgRef = db.doc('config/equipo');
+    const cadenas = new Map();
+    const enSerie = (k, fn) => { const prev = cadenas.get(k) || Promise.resolve(); const next = prev.catch(() => {}).then(fn); cadenas.set(k, next); return next; };
+    const reintento = async fn => { try { return await fn(); } catch (e) { if (e && e.code === 'unavailable') { await sleep(500 + Math.random() * 700); return fn(); } throw e; } };
+    const onErr = e => { setSync(e && e.code === 'revoked' ? 'Sin acceso a la base' : 'Sin conexión con la base', 'err'); };
+    return {
+      mode: 'db',
+      subscribeLeads(cb) { col.orderBy('createdAt', 'desc').limit(1000).onSnapshot(s => cb(s.docs.map(d => ({ id: d.id, ...d.data() }))), onErr); },
+      subscribeConfig(cb) { cfgRef.onSnapshot(s => cb(s.exists ? s.data() : {}), onErr); },
+      saveLead(id, data) { const ref = id ? col.doc(id) : col.doc(); return enSerie(ref.id, () => reintento(() => ref.set(data))).then(() => ref.id); },
+      updateLead(id, patch) { return enSerie(id, () => reintento(() => col.doc(id).update(patch))); },
+      deleteLead(id) { return enSerie(id, () => reintento(() => col.doc(id).delete())); },
+      saveConfig(data) { return enSerie('config', () => reintento(() => cfgRef.set(data))); }
+    };
+  }
+  function localStore() {
+    const K = 'fit26.prospectos', KC = 'fit26.config';
+    let lista = lsGet(K, []);
+    let cfg = lsGet(KC, {});
+    const leadCbs = [], cfgCbs = [];
+    const emitir = () => { const s = [...lista].sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt))); leadCbs.forEach(cb => cb(s)); };
+    const persistir = () => { if (!lsSet(K, lista)) throw { code: 'local', message: 'sin almacenamiento' }; };
+    return {
+      mode: 'local',
+      subscribeLeads(cb) { leadCbs.push(cb); emitir(); },
+      subscribeConfig(cb) { cfgCbs.push(cb); cb(cfg); },
+      async saveLead(id, data) {
+        const nid = id || 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        const i = lista.findIndex(l => l.id === nid);
+        const rec = { ...data, id: nid };
+        if (i >= 0) lista[i] = rec; else lista.push(rec);
+        persistir(); emitir(); return nid;
+      },
+      async updateLead(id, patch) { const l = lista.find(x => x.id === id); if (l) Object.assign(l, patch); persistir(); emitir(); },
+      async deleteLead(id) { lista = lista.filter(x => x.id !== id); persistir(); emitir(); },
+      async saveConfig(data) { cfg = { ...data }; lsSet(KC, cfg); cfgCbs.forEach(cb => cb(cfg)); }
+    };
+  }
+  function setSync(texto, estado) { const s = $('#sync'); s.textContent = texto; s.dataset.s = estado; }
+
+  async function iniciarStore() {
+    let db = null;
+    try {
+      if (window.claude && typeof window.claude.use === 'function') db = await window.claude.use('db');
+    } catch (e) { db = null; }
+    store = db ? dbStore(db) : localStore();
+    if (store.mode === 'db') {
+      setSync('Guardado en la nube, compartido con tu equipo', 'ok');
+      $('#modo-explica').innerHTML = 'Los prospectos se guardan en esta página. Compartila con tu colega con acceso de <b>Editor</b> para que vea la lista en vivo y marque cada reunión como hecha.';
+    } else {
+      setSync('Guardado solo en este dispositivo', 'local');
+      $('#modo-explica').innerHTML = 'Esta copia guarda los prospectos solo en este navegador. Al final de cada día usá <b>Copiar para planilla</b> en Prospectos para no perderlos.';
+    }
+    resolveStore();
+    store.subscribeConfig(c => {
+      config = { ...CONFIG_DEFAULT, ...(c || {}) };
+      aplicarConfig();
+    });
+    store.subscribeLeads(lista => { leads = lista; renderLista(); });
+  }
+
+  /* ---------- Config ---------- */
+  const CFG_CAMPOS = ['miNombre', 'colegaNombre', 'colegaWhatsapp', 'colegaEmail', 'producto', 'landing'];
+  function aplicarConfig() {
+    CFG_CAMPOS.forEach(k => { const el = $('#c-' + k); if (document.activeElement !== el) el.value = config[k] || ''; });
+    $$('[data-colega]').forEach(el => {
+      const fb = el.textContent.startsWith('T') ? 'Tu colega' : (el.textContent.startsWith('m') ? 'mi colega' : 'tu colega');
+      if (!el.dataset.fb) el.dataset.fb = fb;
+      el.textContent = config.colegaNombre.trim() || el.dataset.fb;
+    });
+    $$('[data-producto]').forEach(el => { el.textContent = producto(); });
+    const hint = $('#c-colegaWhatsapp-hint');
+    const tel = normTel(config.colegaWhatsapp);
+    hint.textContent = config.colegaWhatsapp ? (tel ? `Se envía a +${tel}` : 'Revisá el número') : 'Con código de área, sin 0 ni 15.';
+    actualizar();
+  }
+  async function guardarConfig() {
+    const data = {};
+    CFG_CAMPOS.forEach(k => { data[k] = $('#c-' + k).value.trim(); });
+    try {
+      await storeReady;
+      await store.saveConfig(data);
+      config = { ...CONFIG_DEFAULT, ...data };
+      aplicarConfig();
+      toast('Ajustes guardados.');
+    } catch (e) { toast(mensajeError(e), 'bad'); }
+  }
+
+  /* ---------- Lista ---------- */
+  const FILTROS = [
+    { v: 'todos', t: 'Todos' },
+    { v: 'califica', t: 'Reunión' },
+    { v: 'seguimiento', t: 'Seguimiento' },
+    { v: 'no_aplica', t: 'No aplica' },
+    { v: 'agendada', t: 'Con reunión agendada' }
+  ];
+  function renderFiltros() {
+    $('#filtros').innerHTML = FILTROS.map(f => `<button type="button" class="quick" data-filtro="${f.v}" aria-pressed="${f.v === filtro}">${f.t}</button>`).join('');
+  }
+  function renderLista() {
+    $('#tab-count').textContent = leads.length;
+    const n = v => leads.filter(l => l.veredicto === v).length;
+    const ag = leads.filter(l => l.estado === 'agendada').length;
+    const hechas = leads.filter(l => l.estado === 'realizada').length;
+    $('#stats').innerHTML = `
+      <div><b>${leads.length}</b>contactos</div>
+      <div><b>${n('califica')}</b>califican</div>
+      <div><b>${n('seguimiento')}</b>en seguimiento</div>
+      <div><b>${ag}</b>reuniones agendadas</div>
+      <div><b>${hechas}</b>reuniones hechas</div>`;
+    const q = sinAcentos($('#buscar').value.trim());
+    const vis = leads.filter(l => {
+      if (filtro === 'agendada' && l.estado !== 'agendada') return false;
+      if (filtro !== 'todos' && filtro !== 'agendada' && l.veredicto !== filtro) return false;
+      if (q && !sinAcentos([l.empresa, l.nombre, l.ciudad].join(' ')).includes(q)) return false;
+      return true;
+    });
+    const ul = $('#leads');
+    if (!leads.length) { ul.innerHTML = '<li class="empty">Todavía no guardaste prospectos. Calificá al primero en la pestaña Calificar.</li>'; return; }
+    if (!vis.length) { ul.innerHTML = '<li class="empty">Ningún prospecto coincide con el filtro.</li>'; return; }
+    ul.innerHTML = vis.map(l => {
+      const v = VEREDICTOS[l.veredicto] ? l.veredicto : 'incompleto';
+      const rubro = opcion('rubro', l.respuestas && l.respuestas.rubro);
+      const tam = opcion('tamano', l.respuestas && l.respuestas.tamano);
+      const r = l.reunion;
+      const reunion = r && r.fecha ? `<b>${esc(fechaTexto(r.fecha, r.hora))}</b> · ${esc(modalidad(r.modalidad).t)}` : 'Sin fecha de reunión';
+      const wa = normTel(l.whatsapp);
+      return `
+        <li class="lead">
+          <div style="display:grid;gap:4px;min-width:0">
+            <div class="lead-top"><h3>${esc(l.empresa || l.nombre || 'Sin nombre')}</h3><span class="pill ${v}">${esc(VEREDICTOS[v].corto)} · ${Number(l.score) || 0}/${Number(l.max) || MAX}</span></div>
+            <p class="meta">${esc([l.nombre, l.cargo].filter(Boolean).join(', '))}${l.nombre || l.cargo ? ' · ' : ''}${esc([rubro && rubro.t, tam && (tam.v === '1' ? 'solo el dueño' : tam.t + ' personas'), l.ciudad].filter(Boolean).join(' · '))}</p>
+            <p class="meta">${reunion}${l.createdAt ? ` · cargado ${esc(fmtCarga.format(new Date(l.createdAt)))}` : ''}</p>
+            ${l.dolores && l.dolores.length ? `<p class="meta">Le cuesta: ${esc(l.dolores.join(', '))}</p>` : ''}
+          </div>
+          <div class="lead-actions">
+            <select data-estado="${esc(l.id)}" aria-label="Estado de ${esc(l.empresa || l.nombre)}">${ESTADOS.map(e => `<option value="${e.v}" ${e.v === (l.estado || 'nuevo') ? 'selected' : ''}>${e.t}</option>`).join('')}</select>
+            <button type="button" class="btn small outline" data-editar="${esc(l.id)}">Editar</button>
+            ${wa ? `<a class="btn small outline" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
+            <button type="button" class="btn small ghost danger" data-borrar="${esc(l.id)}">Borrar</button>
+          </div>
+        </li>`;
+    }).join('');
+  }
+  function tsv() {
+    const limpiar = s => String(s == null ? '' : s).replace(/[\t\r\n]+/g, ' ').trim();
+    const cab = ['Cargado', 'Empresa', 'Nombre', 'Cargo', 'Ciudad', 'WhatsApp', 'Email', ...PREGUNTAS.map(q => q.corto), 'Le cuesta', 'Puntaje', 'Resultado', 'Estado', 'Reunión', 'Modalidad', 'Notas'];
+    const filas = leads.map(l => [
+      l.createdAt ? fmtCarga.format(new Date(l.createdAt)) : '', l.empresa, l.nombre, l.cargo, l.ciudad, l.whatsapp, l.email,
+      ...PREGUNTAS.map(q => { const o = opcion(q.id, l.respuestas && l.respuestas[q.id]); return o ? o.t : ''; }),
+      (l.dolores || []).join(', '), `${l.score}/${l.max || MAX}`, (VEREDICTOS[l.veredicto] || VEREDICTOS.incompleto).corto,
+      (ESTADOS.find(e => e.v === l.estado) || ESTADOS[0]).t,
+      l.reunion && l.reunion.fecha ? fechaTexto(l.reunion.fecha, l.reunion.hora) : '', l.reunion ? modalidad(l.reunion.modalidad).t : '', l.notas
+    ].map(limpiar).join('\t'));
+    return [cab.join('\t'), ...filas].join('\n');
+  }
+
+  /* ---------- Guion ---------- */
+  function renderGuion() {
+    $('#g-preguntas').innerHTML = PREGUNTAS.map((q, i) => {
+      const max = Math.max(...q.opciones.map(o => o.p));
+      const buenas = q.opciones.filter(o => o.p === max).map(o => o.t);
+      const alertas = q.opciones.filter(o => o.p === 0 || o.ko).map(o => o.t + (o.ko ? ' (descarta)' : ''));
+      return `<div class="gq">
+        <h3>${i + 1}. ${esc(q.titulo)}</h3>
+        <p class="say">“${esc(q.decir)}”</p>
+        <div class="signals">
+          <p><b>Buena señal:</b> ${esc(buenas.join(', '))}</p>
+          ${alertas.length ? `<p><b>Alerta:</b> ${esc(alertas.join(', '))}</p>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    $('#g-umbrales').innerHTML = `Máximo ${MAX} puntos. <b>${UMBRAL_REUNION} o más</b>: agendar reunión, si habla con quien decide. <b>${UMBRAL_SEGUIMIENTO} a ${UMBRAL_REUNION - 1}</b>: seguimiento. <b>Menos de ${UMBRAL_SEGUIMIENTO}</b>, o cualquier respuesta que descarta: no aplica.`;
+    $('#g-tabla').innerHTML = `<thead><tr><th>Pregunta</th><th>Respuesta</th><th style="text-align:right">Puntos</th></tr></thead><tbody>${
+      PREGUNTAS.map(q => q.opciones.map((o, j) => `<tr>${j === 0 ? `<td rowspan="${q.opciones.length}">${esc(q.corto)}</td>` : ''}<td>${esc(o.t)}</td><td class="pts">${o.ko ? 'descarta' : o.p}</td></tr>`).join('')).join('')
+    }</tbody>`;
+    const dias = proximosHabiles(5);
+    const a = dias[1] || dias[0], b = dias[3] || dias[dias.length - 1];
+    const fmtDia = new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric' });
+    $('#g-dia-a').textContent = 'el ' + fmtDia.format(a);
+    $('#g-dia-b').textContent = 'el ' + fmtDia.format(b);
+  }
+
+  /* ---------- Tabs, toast, copiar ---------- */
+  const TABS = ['calificar', 'prospectos', 'guion', 'ajustes'];
+  function irA(tab) {
+    if (!TABS.includes(tab)) tab = 'calificar';
+    TABS.forEach(t => {
+      $('#tab-' + t).setAttribute('aria-selected', String(t === tab));
+      $('#panel-' + t).hidden = t !== tab;
+    });
+    $('#bottombar').hidden = tab !== 'calificar';
+    $('#app').classList.toggle('with-bar', tab === 'calificar');
+    lsSet('fit26.tab', tab);
+  }
+  let toastTimer = null;
+  function toast(texto, tipo) {
+    const t = $('#toast');
+    t.textContent = texto;
+    t.dataset.t = tipo || '';
+    t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.hidden = true; }, 3200);
+  }
+  function copiar(texto, alFallar) {
+    const ok = () => toast('Copiado.');
+    try {
+      navigator.clipboard.writeText(texto).then(ok).catch(alFallar);
+    } catch (e) { alFallar(); }
+  }
+
+  /* ---------- Eventos ---------- */
+  function conectar() {
+    const cal = $('#calificar');
+    const onInput = () => { leerFormulario(); actualizar(); };
+    cal.addEventListener('input', onInput);
+    cal.addEventListener('change', onInput);
+
+    $('#quickdays').addEventListener('click', e => {
+      const b = e.target.closest('[data-dia]'); if (!b) return;
+      $('#f-fecha').value = b.dataset.dia;
+      if (!$('#f-hora').value) $('#f-hora').value = HORAS[0];
+      onInput();
+    });
+    $('#quickhours').addEventListener('click', e => {
+      const b = e.target.closest('[data-hora]'); if (!b) return;
+      $('#f-hora').value = b.dataset.hora; onInput();
+    });
+
+    ['#a-colega', '#a-prospecto', '#a-cal'].forEach(sel => {
+      $(sel).addEventListener('click', e => {
+        const a = e.currentTarget;
+        if (a.getAttribute('aria-disabled') === 'true') {
+          e.preventDefault();
+          toast(a.dataset.motivo || 'Faltan datos.', 'bad');
+          if (sel === '#a-colega' && !normTel(config.colegaWhatsapp)) irA('ajustes');
+          return;
+        }
+        if (form.empresa.trim() || form.nombre.trim()) guardar({ silencioso: true });
+      });
+    });
+    $('#btn-guardar').addEventListener('click', () => guardar());
+    $('#btn-nuevo').addEventListener('click', nuevoProspecto);
+
+    document.addEventListener('click', e => {
+      const g = e.target.closest('[data-goto]');
+      if (g) { irA(g.dataset.goto); window.scrollTo({ top: 0 }); }
+      const c = e.target.closest('[data-copy]');
+      if (c) {
+        const pre = document.getElementById(c.dataset.copy);
+        copiar(pre.textContent, () => {
+          const r = document.createRange(); r.selectNodeContents(pre);
+          const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+          toast('Texto seleccionado: copialo desde el menú.');
+        });
+      }
+    });
+
+    $$('.tab').forEach(b => b.addEventListener('click', () => irA(b.dataset.tab)));
+    $('.tabs').addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const tabs = $$('.tab');
+      const i = tabs.indexOf(document.activeElement);
+      if (i < 0) return;
+      const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      n.focus(); irA(n.dataset.tab);
+    });
+
+    $('#bb-go').addEventListener('click', () => {
+      const ev = evaluar(form.resp);
+      const destino = ev.v === 'incompleto' && ev.siguiente ? document.getElementById('q-' + ev.siguiente.id) : $('#ticket');
+      destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    $('#filtros').addEventListener('click', e => {
+      const b = e.target.closest('[data-filtro]'); if (!b) return;
+      filtro = b.dataset.filtro; renderFiltros(); renderLista();
+    });
+    $('#buscar').addEventListener('input', renderLista);
+    $('#btn-tsv').addEventListener('click', () => {
+      if (!leads.length) { toast('No hay prospectos para copiar.'); return; }
+      const texto = tsv();
+      copiar(texto, () => {
+        const ta = $('#tsv-fallback'); ta.hidden = false; ta.value = texto; ta.focus(); ta.select();
+        toast('Tabla seleccionada: copiala y pegala en la planilla.');
+      });
+    });
+    $('#leads').addEventListener('click', async e => {
+      const ed = e.target.closest('[data-editar]');
+      if (ed) { editar(ed.dataset.editar); return; }
+      const br = e.target.closest('[data-borrar]');
+      if (br) {
+        if (!br.classList.contains('armed')) {
+          br.classList.add('armed'); br.textContent = 'Confirmar borrado';
+          setTimeout(() => { if (br.isConnected) { br.classList.remove('armed'); br.textContent = 'Borrar'; } }, 4000);
+          return;
+        }
+        try {
+          await store.deleteLead(br.dataset.borrar);
+          if (form.id === br.dataset.borrar) { form.id = null; form.createdAt = null; guardadoHash = null; escribirFormulario(); actualizar(); }
+          toast('Prospecto borrado.');
+        } catch (err) { toast(mensajeError(err), 'bad'); }
+      }
+    });
+    $('#leads').addEventListener('change', async e => {
+      const s = e.target.closest('[data-estado]'); if (!s) return;
+      try {
+        await store.updateLead(s.dataset.estado, { estado: s.value, updatedAt: new Date().toISOString() });
+        if (form.id === s.dataset.estado) { form.estado = s.value; guardadoHash = hashDe(datosParaGuardar()); actualizar(); }
+        toast('Estado actualizado.');
+      } catch (err) { toast(mensajeError(err), 'bad'); }
+    });
+
+    $('#btn-cfg').addEventListener('click', guardarConfig);
+    $('#c-colegaWhatsapp').addEventListener('input', () => {
+      const v = $('#c-colegaWhatsapp').value; const tel = normTel(v);
+      $('#c-colegaWhatsapp-hint').textContent = v ? (tel ? `Se envía a +${tel}` : 'Revisá el número') : 'Con código de área, sin 0 ni 15.';
+    });
+  }
+
+  /* ---------- Inicio ---------- */
+  renderPreguntas();
+  renderGuion();
+  renderFiltros();
+  const borrador = lsGet('fit26.borrador', null);
+  if (borrador && borrador.form) {
+    form = { ...formVacio(), ...borrador.form };
+    guardadoHash = borrador.guardadoHash || null;
+  }
+  escribirFormulario();
+  conectar();
+  actualizar();
+  renderLista();
+  const hashTab = (location.hash || '').replace('#', '');
+  irA(TABS.includes(hashTab) ? hashTab : lsGet('fit26.tab', 'calificar'));
+  iniciarStore();
+})();
+</script>
+
+</body>
+</html>
