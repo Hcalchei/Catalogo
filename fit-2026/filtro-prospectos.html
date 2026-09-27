@@ -273,6 +273,7 @@
   .gq h3 { font-size: 16px; }
   .signals { display: grid; gap: 4px; font-size: 14px; }
   .signals b { font-weight: 600; }
+  ul.signals { margin: 0; padding-left: 18px; gap: 8px; font-size: 15px; }
   .obj { display: grid; gap: 4px; }
   .obj dt { font-weight: 700; }
   .obj dd { margin: 0 0 10px; }
@@ -419,50 +420,82 @@
   <!-- GUION -->
   <section id="panel-guion" role="tabpanel" aria-labelledby="tab-guion" hidden>
     <div class="guion">
-      <p class="tip">Una base para el stand. Si con <span data-colega>tu colega</span> definieron otro perfil de cliente, ajustá las preguntas y los puntajes al principio del código de esta página.</p>
+      <p class="tip">Vas como visitante y ellos están trabajando. La meta en cada stand: encontrar a quien decide, charlar 60 segundos y llevarte su WhatsApp con una reunión para después de la feria.</p>
 
       <div class="card">
-        <h2>Apertura</h2>
-        <p class="say">“Hola, ¿cómo va? ¿Trabajás en turismo? Estamos mostrando <span data-producto>Odoo</span>, un sistema de gestión que junta ventas, reservas, cobros y facturación en un solo lugar. ¿Te hago unas preguntas rápidas para ver si le sirve a tu empresa?”</p>
-        <p class="tip">Si está paseando o no trabaja en turismo, agradecé y seguí. El tiempo del stand es para quien puede comprar.</p>
+        <h2>Cuándo y a quién</h2>
+        <ul class="signals">
+          <li><b>Lunes 28 y martes 29, de 10 a 19:</b> son días solo para profesionales. Hay menos público y los dueños están en el stand.</li>
+          <li><b>Mejores momentos:</b> la primera hora y después del almuerzo. Si están atendiendo, no interrumpas: decí “paso en un rato” y volvé.</li>
+          <li><b>Priorizá:</b> agencias, receptivos, operadores y hoteles privados. En los stands de provincias suele haber privados atendiendo; preguntá por ellos.</li>
+          <li><b>Salteá:</b> organismos públicos, países, aerolíneas y cadenas grandes.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>1. Rompé el hielo</h2>
+        <p class="say">“Hola, ¿qué tal? Muy lindo el stand. ¿Ustedes qué trabajan, receptivo o emisivo?”</p>
+        <p class="tip">Dejalos contarte 20 segundos. Primero interesate por su negocio; después ellos escuchan el tuyo.</p>
+      </div>
+
+      <div class="card">
+        <h2>2. Encontrá a quien decide</h2>
+        <p class="say">“¿Vos sos de la agencia? ¿Quién ve la parte de administración?”</p>
+        <p class="tip">Si te atiende alguien que no decide, preguntá a qué hora está el dueño o pedile su WhatsApp.</p>
+      </div>
+
+      <div class="card">
+        <h2>3. El gancho</h2>
+        <p class="say">“Pregunta de curioso: todas las consultas que se llevan de esta feria, ¿cómo las siguen después? ¿Quedan en un Excel, en tarjetas?”</p>
+        <p class="say">“Con tantos proveedores y ventas en pesos y dólares, ¿cómo llevan hoy la administración?”</p>
+        <p class="say">“¿Facturan desde el mismo sistema donde venden, o cargan todo dos veces?”</p>
+        <p class="tip">El primero es el más fuerte: todos se van a llevar contactos de la feria y casi nadie tiene cómo seguirlos.</p>
+      </div>
+
+      <div class="card">
+        <h2>4. Presentate en una frase</h2>
+        <p class="say">“Yo implemento <span data-producto>Odoo</span>, un sistema que junta ventas, facturación, cobranzas y el seguimiento de clientes en un solo lugar. Justo lo que se complica después de una feria como esta.”</p>
       </div>
 
       <div class="card">
         <h2>Las preguntas del filtro</h2>
+        <p class="tip">En el stand no hagas las 6 de corrido. El rubro lo ves en el cartel; preguntá tamaño, cómo gestionan hoy y quién decide. Si la inversión no surge, marcá “Lo evalúa”.</p>
         <div id="g-preguntas"></div>
       </div>
 
       <div class="card">
-        <h2>Cierre para agendar</h2>
-        <p class="say">“Por lo que me contás, tiene sentido que lo veas con <span data-colega>mi colega</span>, que es quien arma la propuesta. Son 30 minutos y lo ves aplicado a tu empresa. ¿Te queda mejor <span id="g-dia-a">el martes</span> o <span id="g-dia-b">el jueves</span>?”</p>
-        <p class="tip">Ofrecé dos opciones concretas. Cargá día y hora en Calificar y mandá los dos WhatsApp con la persona adelante: así confirma en el momento.</p>
+        <h2>5. Cierre para después de la feria</h2>
+        <p class="say">“Ahora estás a full, no te robo más tiempo. ¿Te parece si <span data-colega>mi colega</span> te muestra en 30 minutos por videollamada cómo quedarían las consultas de la feria cargadas y con seguimiento? ¿Te queda mejor <span id="g-dia-a">el jueves</span> o <span id="g-dia-b">el viernes</span>?”</p>
+        <p class="tip">Confirmá por WhatsApp con la persona adelante y dejale la tarjeta con el QR: “Escaneá y ves una venta de principio a fin”.</p>
       </div>
 
       <div class="card">
         <h2>Si queda en seguimiento</h2>
-        <p class="say">“Te paso info por WhatsApp y te escribimos después de la feria para ver si tiene sentido una reunión.”</p>
+        <p class="say">“¿Me pasás tu WhatsApp y te escribo cuando termine la feria para buscar un horario?”</p>
         <p class="tip">Guardalo igual. <span data-colega>Tu colega</span> decide si lo llama.</p>
       </div>
 
       <div class="card">
         <h2>Si no aplica</h2>
-        <p class="say">“Gracias por pasar. Si en algún momento cambian las cosas, acá tenés nuestro contacto.”</p>
+        <p class="say">“Gracias por tu tiempo, ¡que tengan una buena feria!”</p>
         <p class="tip">No agendes. Una reunión con alguien que no califica le saca un turno a alguien que sí.</p>
       </div>
 
       <div class="card">
-        <h2>Objeciones frecuentes</h2>
+        <h2>Objeciones en el stand</h2>
         <dl class="obj">
+          <dt>“Estamos a full, ahora no.”</dt>
+          <dd>“Totalmente, por eso no te lo muestro acá. ¿Me pasás tu WhatsApp y lo vemos después de la feria?”</dd>
+          <dt>“Dejame tu tarjeta.”</dt>
+          <dd>“Te la dejo. Y para que no quede en la pila de tarjetas de la feria, ¿agendamos ya un día? Si no te sirve, lo cancelás con un mensaje.”</dd>
           <dt>“Ya tenemos un sistema.”</dt>
-          <dd>“Bárbaro. ¿Y qué es lo que hoy te sigue llevando más tiempo, aunque lo tengas?”</dd>
+          <dd>“Bárbaro. ¿Y el seguimiento de las consultas de la feria lo hacen ahí mismo?”</dd>
+          <dt>“Eso lo ve mi socio.”</dt>
+          <dd>“¿Está en la feria? Si no, pasame su contacto y los invito a los dos a la reunión.”</dd>
           <dt>“¿Cuánto sale?”</dt>
           <dd>“Depende de cuántos usuarios y qué módulos uses, más la implementación. En la reunión <span data-colega>mi colega</span> te da el número exacto para tu caso.”</dd>
-          <dt>“Mandame info por mail.”</dt>
-          <dd>“Te la mando. Y para que no quede en un PDF más, ¿te reservo 30 minutos con <span data-colega>mi colega</span> para verlo con tu caso?”</dd>
-          <dt>“¿Odoo sirve para turismo?”</dt>
-          <dd>“Sí. Trae CRM, ventas, facturación electrónica, cobranzas en pesos y dólares y compras a proveedores. Lo que es propio de tu operación se configura o se desarrolla a medida.”</dd>
-          <dt>“Ahora no tengo tiempo.”</dt>
-          <dd>“Por eso te propongo después de la feria. ¿Qué día te queda mejor?”</dd>
+          <dt>“¿Nos venís a vender algo?”</dt>
+          <dd>“Sí, igual que ustedes acá. Te lo hago corto: una pregunta y, si no te sirve, sigo.”</dd>
         </dl>
       </div>
 
@@ -520,14 +553,14 @@
   const FERIA = 'FIT 2026';
   const PREGUNTAS = [
     { id: 'rubro', corto: 'Rubro', titulo: '¿A qué se dedica la empresa?',
-      decir: 'Contame, ¿a qué se dedican?',
+      decir: '¿Ustedes qué trabajan, receptivo o emisivo?',
       opciones: [
         { v: 'agencia', t: 'Agencia de viajes', p: 3 },
         { v: 'operador', t: 'Operador mayorista o receptivo', p: 3 },
         { v: 'alojamiento', t: 'Hotel o alojamiento', p: 3 },
         { v: 'excursiones', t: 'Excursiones, transporte o traslados', p: 3 },
         { v: 'otro_turismo', t: 'Otro negocio de turismo', p: 2 },
-        { v: 'no_empresa', t: 'Particular, estudiante o curioso', p: 0, ko: 'No es una empresa' }
+        { v: 'no_empresa', t: 'Organismo público, provincia o país', p: 0, ko: 'No es una empresa privada' }
       ] },
     { id: 'tamano', corto: 'Equipo', titulo: '¿Cuántas personas trabajan?',
       decir: '¿Cuántos son en el equipo, contando sucursales?',
@@ -582,7 +615,7 @@
   const DURACION_MIN = 30;
   const MODALIDADES = [
     { v: 'video', t: 'Videollamada', frase: 'por videollamada' },
-    { v: 'stand', t: 'En el stand', frase: 'en nuestro stand de la FIT' },
+    { v: 'stand', t: 'En su stand', frase: 'en tu stand de la FIT' },
     { v: 'oficina', t: 'En su oficina', frase: 'en tu oficina' }
   ];
   const HORAS = ['10:00', '11:30', '15:00', '17:00'];
@@ -1149,8 +1182,9 @@
     $('#g-tabla').innerHTML = `<thead><tr><th>Pregunta</th><th>Respuesta</th><th style="text-align:right">Puntos</th></tr></thead><tbody>${
       PREGUNTAS.map(q => q.opciones.map((o, j) => `<tr>${j === 0 ? `<td rowspan="${q.opciones.length}">${esc(q.corto)}</td>` : ''}<td>${esc(o.t)}</td><td class="pts">${o.ko ? 'descarta' : o.p}</td></tr>`).join('')).join('')
     }</tbody>`;
-    const dias = proximosHabiles(5);
-    const a = dias[1] || dias[0], b = dias[3] || dias[dias.length - 1];
+    const finFeria = new Date(2026, 8, 29);
+    const dias = proximosHabiles(10).filter(d => d > finFeria);
+    const a = dias[1] || dias[0], b = dias[2] || dias[1] || dias[0];
     const fmtDia = new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric' });
     $('#g-dia-a').textContent = 'el ' + fmtDia.format(a);
     $('#g-dia-b').textContent = 'el ' + fmtDia.format(b);
