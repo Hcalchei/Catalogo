@@ -140,6 +140,7 @@
   input::placeholder, textarea::placeholder { color: var(--muted); opacity: .75; }
   input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
   .hint { font-size: 12px; color: var(--muted); min-height: 1em; }
+  #f-hora-hint { color: var(--warn); font-weight: 600; }
 
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 15px; line-height: 1.2; border: 1px solid transparent; cursor: pointer; text-decoration: none; text-align: center; background: var(--surface-2); color: var(--ink); }
   .btn.primary { background: var(--accent); color: var(--accent-ink); }
@@ -373,6 +374,7 @@
             <span class="field-label">Hora</span>
             <div class="quickrow" id="quickhours"></div>
             <input type="time" id="f-hora" step="900" aria-label="Hora de la reunión">
+            <small class="hint" id="f-hora-hint"></small>
           </div>
           <div class="field" role="radiogroup" aria-labelledby="lbl-modalidad">
             <span class="field-label" id="lbl-modalidad">Modalidad</span>
@@ -465,7 +467,7 @@
 
       <div class="card">
         <h2>5. Cierre para después de la feria</h2>
-        <p class="say">“Ahora estás a full, no te robo más tiempo. ¿Te parece si <span data-colega>mi colega</span> te muestra en 30 minutos por videollamada cómo quedarían las consultas de la feria cargadas y con seguimiento? ¿Te queda mejor <span id="g-dia-a">el jueves</span> o <span id="g-dia-b">el viernes</span>?”</p>
+        <p class="say">“Ahora estás a full, no te robo más tiempo. ¿Te parece si <span data-colega>mi colega</span> te muestra en 30 minutos por videollamada cómo quedarían las consultas de la feria cargadas y con seguimiento? ¿Te queda mejor <span id="g-dia-a">el jueves</span> a las <span id="g-hora-a">15</span> o <span id="g-dia-b">el viernes</span> a las <span id="g-hora-b">16</span>?”</p>
         <p class="tip">Confirmá por WhatsApp con la persona adelante y dejale la tarjeta con el QR: “Escaneá y ves una venta de principio a fin”.</p>
       </div>
 
@@ -518,6 +520,7 @@
           <label class="field"><span>Nombre de tu colega</span><input type="text" id="c-colegaNombre" autocomplete="off" placeholder="Martín"></label>
           <label class="field"><span>WhatsApp de tu colega</span><input type="tel" id="c-colegaWhatsapp" inputmode="tel" autocomplete="off" placeholder="11 5555 1234"><small class="hint" id="c-colegaWhatsapp-hint">Con código de área, sin 0 ni 15.</small></label>
           <label class="field"><span>Email de tu colega</span><input type="email" id="c-colegaEmail" inputmode="email" autocomplete="off" placeholder="martin@empresa.com"></label>
+          <label class="field"><span>Tu colega toma reuniones desde</span><input type="time" id="c-colegaDesde" step="900"></label>
         </div>
         <div class="grid2">
           <label class="field"><span>Cómo nombrás el sistema ante el cliente</span><input type="text" id="c-producto" autocomplete="off" placeholder="Odoo"></label>
@@ -618,7 +621,7 @@
     { v: 'stand', t: 'En su stand', frase: 'en tu stand de la FIT' },
     { v: 'oficina', t: 'En su oficina', frase: 'en tu oficina' }
   ];
-  const HORAS = ['10:00', '11:30', '15:00', '17:00'];
+  const HORA_DESDE = '15:00';   // desde qué hora se proponen reuniones (editable en Ajustes)
   const ESTADOS = [
     { v: 'nuevo', t: 'Sin agendar' },
     { v: 'agendada', t: 'Reunión agendada' },
@@ -635,7 +638,7 @@
     incompleto: { t: 'Incompleto', corto: 'Incompleto' }
   };
   const LANDING_URL = 'https://hcalchei.github.io/Catalogo/odoo/';  // página que se comparte con el prospecto
-  const CONFIG_DEFAULT = { miNombre: '', colegaNombre: '', colegaWhatsapp: '', colegaEmail: '', producto: '', landing: '' };
+  const CONFIG_DEFAULT = { miNombre: '', colegaNombre: '', colegaWhatsapp: '', colegaEmail: '', colegaDesde: HORA_DESDE, producto: '', landing: '' };
 
   const $ = s => document.querySelector(s);
   const $$ = s => Array.from(document.querySelectorAll(s));
@@ -761,7 +764,7 @@
     $('#modalidades').innerHTML = MODALIDADES.map(m => `
       <label class="chip"><input type="radio" name="modalidad" id="mod-${m.v}" value="${m.v}"><span>${esc(m.t)}</span></label>`).join('');
     $('#quickdays').innerHTML = proximosHabiles(5).map(d => `<button type="button" class="quick" data-dia="${ymd(d)}" aria-pressed="false">${esc(fmtCorto.format(d).replace(/\.$/, ''))}</button>`).join('');
-    $('#quickhours').innerHTML = HORAS.map(h => `<button type="button" class="quick" data-hora="${h}" aria-pressed="false">${h}</button>`).join('');
+    renderHoras();
 
     const segs = [UMBRAL_SEGUIMIENTO - 1, UMBRAL_REUNION - UMBRAL_SEGUIMIENTO, MAX - UMBRAL_REUNION + 1];
     $('#t-meter').style.gridTemplateColumns = `repeat(${MAX}, 1fr)`;
@@ -915,6 +918,7 @@
 
     $$('#quickdays .quick').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dia === form.fecha)));
     $$('#quickhours .quick').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.hora === form.hora)));
+    $('#f-hora-hint').textContent = form.hora && form.hora < horaDesde() ? `${colega('Tu colega')} toma reuniones desde las ${horaDesde()} h.` : '';
 
     const sucio = hashDe(datosParaGuardar()) !== guardadoHash;
     const bg = $('#btn-guardar');
@@ -1068,8 +1072,23 @@
   }
 
   /* ---------- Config ---------- */
-  const CFG_CAMPOS = ['miNombre', 'colegaNombre', 'colegaWhatsapp', 'colegaEmail', 'producto', 'landing'];
+  const CFG_CAMPOS = ['miNombre', 'colegaNombre', 'colegaWhatsapp', 'colegaEmail', 'colegaDesde', 'producto', 'landing'];
+  const horaDesde = () => (/^\d{2}:\d{2}$/.test(config.colegaDesde || '') ? config.colegaDesde : HORA_DESDE);
+  function horasSugeridas() {
+    const [h, m] = horaDesde().split(':').map(Number);
+    return [0, 1, 2, 3].map(i => p2(Math.min(h + i, 23)) + ':' + p2(m));
+  }
+  function renderHoras() {
+    $('#quickhours').innerHTML = horasSugeridas().map(h => `<button type="button" class="quick" data-hora="${h}" aria-pressed="false">${h}</button>`).join('');
+    $('#f-hora').min = horaDesde();
+    const hs = horasSugeridas();
+    const corta = h => h.endsWith(':00') ? String(Number(h.slice(0, 2))) : h;
+    const ga = document.getElementById('g-hora-a'), gb = document.getElementById('g-hora-b');
+    if (ga) ga.textContent = corta(hs[0]);
+    if (gb) gb.textContent = corta(hs[1]);
+  }
   function aplicarConfig() {
+    renderHoras();
     CFG_CAMPOS.forEach(k => { const el = $('#c-' + k); if (document.activeElement !== el) el.value = config[k] || ''; });
     $$('[data-colega]').forEach(el => {
       const fb = el.textContent.startsWith('T') ? 'Tu colega' : (el.textContent.startsWith('m') ? 'mi colega' : 'tu colega');
@@ -1228,7 +1247,7 @@
     $('#quickdays').addEventListener('click', e => {
       const b = e.target.closest('[data-dia]'); if (!b) return;
       $('#f-fecha').value = b.dataset.dia;
-      if (!$('#f-hora').value) $('#f-hora').value = HORAS[0];
+      if (!$('#f-hora').value) $('#f-hora').value = horasSugeridas()[0];
       onInput();
     });
     $('#quickhours').addEventListener('click', e => {
