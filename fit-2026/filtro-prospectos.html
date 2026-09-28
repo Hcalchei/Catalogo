@@ -467,7 +467,7 @@
 
       <div class="card">
         <h2>5. Cierre para después de la feria</h2>
-        <p class="say">“Ahora estás a full, no te robo más tiempo. ¿Te parece si <span data-colega>mi colega</span> te muestra en 30 minutos por videollamada cómo quedarían las consultas de la feria cargadas y con seguimiento? ¿Te queda mejor <span id="g-dia-a">el jueves</span> a las <span id="g-hora-a">15</span> o <span id="g-dia-b">el viernes</span> a las <span id="g-hora-b">16</span>?”</p>
+        <p class="say">“Ahora estás a full, no te robo más tiempo. ¿Te parece si te juntás con <span data-colega>mi colega</span>, presencial o por videollamada, y te muestra cómo quedarían las consultas de la feria cargadas y con seguimiento? ¿Te queda mejor <span id="g-dia-a">el jueves</span> a las <span id="g-hora-a">15</span> o <span id="g-dia-b">el viernes</span> a las <span id="g-hora-b">16</span>?”</p>
         <p class="tip">Confirmá por WhatsApp con la persona adelante y dejale la tarjeta con el QR: “Escaneá y ves una venta de principio a fin”.</p>
       </div>
 
@@ -620,9 +620,10 @@
   const UMBRAL_SEGUIMIENTO = 8;  // desde este puntaje: seguimiento
   const DURACION_MIN = 30;
   const MODALIDADES = [
+    { v: 'a_definir', t: 'A definir', frase: 'presencial o por videollamada, como te quede mejor' },
+    { v: 'oficina', t: 'Presencial', frase: 'presencial en tu oficina' },
     { v: 'video', t: 'Videollamada', frase: 'por videollamada' },
-    { v: 'stand', t: 'En su stand', frase: 'en tu stand de la FIT' },
-    { v: 'oficina', t: 'En su oficina', frase: 'en tu oficina' }
+    { v: 'stand', t: 'En su stand', frase: 'en tu stand de la FIT' }
   ];
   const HORA_DESDE = '15:00';   // desde qué hora se proponen reuniones (editable en Ajustes)
   const ESTADOS = [
