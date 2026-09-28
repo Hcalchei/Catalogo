@@ -140,7 +140,7 @@
   input::placeholder, textarea::placeholder { color: var(--muted); opacity: .75; }
   input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
   .hint { font-size: 12px; color: var(--muted); min-height: 1em; }
-  #f-hora-hint { color: var(--warn); font-weight: 600; }
+  #f-hora-hint, #f-fecha-hint { color: var(--warn); font-weight: 600; }
 
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 15px; line-height: 1.2; border: 1px solid transparent; cursor: pointer; text-decoration: none; text-align: center; background: var(--surface-2); color: var(--ink); }
   .btn.primary { background: var(--accent); color: var(--accent-ink); }
@@ -369,6 +369,7 @@
             <span class="field-label">Día</span>
             <div class="quickrow" id="quickdays"></div>
             <input type="date" id="f-fecha" aria-label="Día de la reunión">
+            <small class="hint" id="f-fecha-hint"></small>
           </div>
           <div class="field">
             <span class="field-label">Hora</span>
@@ -523,6 +524,7 @@
           <label class="field"><span>WhatsApp de tu colega</span><input type="tel" id="c-colegaWhatsapp" inputmode="tel" autocomplete="off" placeholder="11 5555 1234"><small class="hint" id="c-colegaWhatsapp-hint">Con código de área, sin 0 ni 15.</small></label>
           <label class="field"><span>Email de tu colega</span><input type="email" id="c-colegaEmail" inputmode="email" autocomplete="off" placeholder="martin@empresa.com"></label>
           <label class="field"><span>Tu colega toma reuniones desde</span><input type="time" id="c-colegaDesde" step="900"></label>
+          <div class="field" role="group" aria-labelledby="lbl-diasno"><span class="field-label" id="lbl-diasno">Días sin reuniones</span><div class="chips"><label class="chip"><input type="checkbox" id="c-dia-1"><span>Lun</span></label><label class="chip"><input type="checkbox" id="c-dia-2"><span>Mar</span></label><label class="chip"><input type="checkbox" id="c-dia-3"><span>Mié</span></label><label class="chip"><input type="checkbox" id="c-dia-4"><span>Jue</span></label><label class="chip"><input type="checkbox" id="c-dia-5"><span>Vie</span></label></div></div>
         </div>
         <div class="grid2">
           <label class="field"><span>Cómo nombrás el sistema ante el cliente</span><input type="text" id="c-producto" autocomplete="off" placeholder="Odoo"></label>
@@ -639,7 +641,7 @@
     incompleto: { t: 'Incompleto', corto: 'Incompleto' }
   };
   const LANDING_URL = 'https://hcalchei.github.io/Catalogo/odoo/';  // página que se comparte con el prospecto
-  const CONFIG_DEFAULT = { miNombre: '', colegaNombre: '', colegaWhatsapp: '', colegaEmail: '', colegaDesde: HORA_DESDE, producto: '', landing: '' };
+  const CONFIG_DEFAULT = { miNombre: '', colegaNombre: '', colegaWhatsapp: '', colegaEmail: '', colegaDesde: HORA_DESDE, colegaDiasNo: [], producto: '', landing: '' };
 
   const $ = s => document.querySelector(s);
   const $$ = s => Array.from(document.querySelectorAll(s));
@@ -764,7 +766,7 @@
       <label class="chip"><input type="checkbox" id="dol-${i}" value="${esc(d)}"><span>${esc(d)}</span></label>`).join('');
     $('#modalidades').innerHTML = MODALIDADES.map(m => `
       <label class="chip"><input type="radio" name="modalidad" id="mod-${m.v}" value="${m.v}"><span>${esc(m.t)}</span></label>`).join('');
-    $('#quickdays').innerHTML = proximosHabiles(5).map(d => `<button type="button" class="quick" data-dia="${ymd(d)}" aria-pressed="false">${esc(fmtCorto.format(d).replace(/\.$/, ''))}</button>`).join('');
+    renderDias();
     renderHoras();
     $('#campo-modalidad').hidden = MODALIDADES.length < 2;
 
@@ -920,6 +922,7 @@
 
     $$('#quickdays .quick').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dia === form.fecha)));
     $$('#quickhours .quick').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.hora === form.hora)));
+    $('#f-fecha-hint').textContent = form.fecha && !diaHabilitado(parseFecha(form.fecha)) ? `${colega('Tu colega')} no toma reuniones los ${fmtDiaSemana.format(parseFecha(form.fecha))}.` : '';
     $('#f-hora-hint').textContent = form.hora && form.hora < horaDesde() ? `${colega('Tu colega')} toma reuniones desde las ${horaDesde()} h.` : '';
 
     const sucio = hashDe(datosParaGuardar()) !== guardadoHash;
@@ -1078,7 +1081,22 @@
   const horaDesde = () => (/^\d{2}:\d{2}$/.test(config.colegaDesde || '') ? config.colegaDesde : HORA_DESDE);
   function horasSugeridas() {
     const [h, m] = horaDesde().split(':').map(Number);
-    return [0, 1, 2, 3].map(i => p2(Math.min(h + i, 23)) + ':' + p2(m));
+    return [0, 30, 60, 90].map(extra => { const t = Math.min(h * 60 + m + extra, 23 * 60 + 45); return p2(Math.floor(t / 60)) + ':' + p2(t % 60); });
+  }
+  const DIAS_SEMANA = [1, 2, 3, 4, 5];
+  const fmtDiaSemana = new Intl.DateTimeFormat('es-AR', { weekday: 'long' });
+  const diasNo = () => (Array.isArray(config.colegaDiasNo) ? config.colegaDiasNo.map(Number) : []);
+  const diaHabilitado = d => !diasNo().includes(d.getDay());
+  function renderDias() {
+    $('#quickdays').innerHTML = proximosHabiles(15).filter(diaHabilitado).slice(0, 5).map(d => `<button type="button" class="quick" data-dia="${ymd(d)}" aria-pressed="false">${esc(fmtCorto.format(d).replace(/\.$/, ''))}</button>`).join('');
+  }
+  function renderGuionDias() {
+    const finFeria = new Date(2026, 8, 29);
+    const dias = proximosHabiles(15).filter(d => d > finFeria && diaHabilitado(d));
+    const a = dias[0], b = dias[1] || dias[0];
+    const fmtDia = new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric' });
+    $('#g-dia-a').textContent = 'el ' + fmtDia.format(a);
+    $('#g-dia-b').textContent = 'el ' + fmtDia.format(b);
   }
   function renderHoras() {
     $('#quickhours').innerHTML = horasSugeridas().map(h => `<button type="button" class="quick" data-hora="${h}" aria-pressed="false">${h}</button>`).join('');
@@ -1091,7 +1109,10 @@
   }
   function aplicarConfig() {
     renderHoras();
+    renderDias();
+    renderGuionDias();
     CFG_CAMPOS.forEach(k => { const el = $('#c-' + k); if (document.activeElement !== el) el.value = config[k] || ''; });
+    DIAS_SEMANA.forEach(n => { $('#c-dia-' + n).checked = diasNo().includes(n); });
     $$('[data-colega]').forEach(el => {
       const fb = el.textContent.startsWith('T') ? 'Tu colega' : (el.textContent.startsWith('m') ? 'mi colega' : 'tu colega');
       if (!el.dataset.fb) el.dataset.fb = fb;
@@ -1106,6 +1127,7 @@
   async function guardarConfig() {
     const data = {};
     CFG_CAMPOS.forEach(k => { data[k] = $('#c-' + k).value.trim(); });
+    data.colegaDiasNo = DIAS_SEMANA.filter(n => $('#c-dia-' + n).checked);
     try {
       await storeReady;
       await store.saveConfig(data);
@@ -1203,12 +1225,7 @@
     $('#g-tabla').innerHTML = `<thead><tr><th>Pregunta</th><th>Respuesta</th><th style="text-align:right">Puntos</th></tr></thead><tbody>${
       PREGUNTAS.map(q => q.opciones.map((o, j) => `<tr>${j === 0 ? `<td rowspan="${q.opciones.length}">${esc(q.corto)}</td>` : ''}<td>${esc(o.t)}</td><td class="pts">${o.ko ? 'descarta' : o.p}</td></tr>`).join('')).join('')
     }</tbody>`;
-    const finFeria = new Date(2026, 8, 29);
-    const dias = proximosHabiles(10).filter(d => d > finFeria);
-    const a = dias[1] || dias[0], b = dias[2] || dias[1] || dias[0];
-    const fmtDia = new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric' });
-    $('#g-dia-a').textContent = 'el ' + fmtDia.format(a);
-    $('#g-dia-b').textContent = 'el ' + fmtDia.format(b);
+    renderGuionDias();
   }
 
   /* ---------- Tabs, toast, copiar ---------- */
