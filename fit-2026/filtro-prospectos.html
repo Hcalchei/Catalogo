@@ -376,7 +376,7 @@
             <input type="time" id="f-hora" step="900" aria-label="Hora de la reunión">
             <small class="hint" id="f-hora-hint"></small>
           </div>
-          <div class="field" role="radiogroup" aria-labelledby="lbl-modalidad">
+          <div class="field" id="campo-modalidad" role="radiogroup" aria-labelledby="lbl-modalidad">
             <span class="field-label" id="lbl-modalidad">Modalidad</span>
             <div class="chips" id="modalidades"></div>
           </div>
@@ -467,7 +467,7 @@
 
       <div class="card">
         <h2>5. Cierre para después de la feria</h2>
-        <p class="say">“Ahora estás a full, no te robo más tiempo. ¿Te parece si te juntás con <span data-colega>mi colega</span>, presencial o por videollamada, y te muestra cómo quedarían las consultas de la feria cargadas y con seguimiento? ¿Te queda mejor <span id="g-dia-a">el jueves</span> a las <span id="g-hora-a">15</span> o <span id="g-dia-b">el viernes</span> a las <span id="g-hora-b">16</span>?”</p>
+        <p class="say">“Ahora estás a full, no te robo más tiempo. ¿Te parece una videollamada de 30 minutos con <span data-colega>mi colega</span>, que te muestra cómo quedarían las consultas de la feria cargadas y con seguimiento? ¿Te queda mejor <span id="g-dia-a">el jueves</span> a las <span id="g-hora-a">15</span> o <span id="g-dia-b">el viernes</span> a las <span id="g-hora-b">16</span>?”</p>
         <p class="tip">Confirmá por WhatsApp con la persona adelante y dejale la tarjeta con el QR: “Escaneá y ves una venta de principio a fin”.</p>
       </div>
 
@@ -620,10 +620,7 @@
   const UMBRAL_SEGUIMIENTO = 8;  // desde este puntaje: seguimiento
   const DURACION_MIN = 30;
   const MODALIDADES = [
-    { v: 'a_definir', t: 'A definir', frase: 'presencial o por videollamada, como te quede mejor' },
-    { v: 'oficina', t: 'Presencial', frase: 'presencial en tu oficina' },
-    { v: 'video', t: 'Videollamada', frase: 'por videollamada' },
-    { v: 'stand', t: 'En su stand', frase: 'en tu stand de la FIT' }
+    { v: 'video', t: 'Videollamada', frase: 'por videollamada' }
   ];
   const HORA_DESDE = '15:00';   // desde qué hora se proponen reuniones (editable en Ajustes)
   const ESTADOS = [
@@ -769,6 +766,7 @@
       <label class="chip"><input type="radio" name="modalidad" id="mod-${m.v}" value="${m.v}"><span>${esc(m.t)}</span></label>`).join('');
     $('#quickdays').innerHTML = proximosHabiles(5).map(d => `<button type="button" class="quick" data-dia="${ymd(d)}" aria-pressed="false">${esc(fmtCorto.format(d).replace(/\.$/, ''))}</button>`).join('');
     renderHoras();
+    $('#campo-modalidad').hidden = MODALIDADES.length < 2;
 
     const segs = [UMBRAL_SEGUIMIENTO - 1, UMBRAL_REUNION - UMBRAL_SEGUIMIENTO, MAX - UMBRAL_REUNION + 1];
     $('#t-meter').style.gridTemplateColumns = `repeat(${MAX}, 1fr)`;
