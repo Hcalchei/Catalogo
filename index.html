@@ -126,6 +126,7 @@
         <button onclick="filterCategory('FLOR DE CAMPO - UNTABLE')" class="cat-btn bg-stone-50 hover:bg-amber-50 text-stone-700 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">UNTABLE (33%)</button>
         <button onclick="filterCategory('FLOR DE CAMPO - MIEL DE ABEJAS')" class="cat-btn bg-stone-50 hover:bg-amber-50 text-stone-700 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">FLOR DE CAMPO (Pura)</button>
         <button onclick="filterCategory('LA CHACRA - DULCE DE LECHE')" class="cat-btn bg-stone-50 hover:bg-amber-50 text-stone-700 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">DULCE DE LECHE</button>
+        <button onclick="filterCategory('LÁCTEOS LA CHACRA - QUESOS')" class="cat-btn bg-stone-50 hover:bg-amber-50 text-stone-700 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">QUESOS LA CHACRA</button>
       </div>
     </nav>
 
@@ -207,6 +208,7 @@
     }
 
     function getFinalPrice(basePrice, product) {
+      if (basePrice == null) return null;
       if (product && product.noDiscount) return basePrice;
       return basePrice * (1 - currentDiscount);
     }
@@ -282,6 +284,91 @@
         items: [
           { name: "400 G X 12 U.", price: 16200.00 }
         ]
+      },
+      // Quesos de Lácteos La Chacra: todavía sin precio de venta (price: null = "Consultar precio").
+      {
+        id: "lc_queso_tybo",
+        category: "LÁCTEOS LA CHACRA - QUESOS",
+        title: "LÁCTEOS LA CHACRA - Queso Tybo",
+        badge: "Semiduro",
+        image: "lacteos/tybo.jpg",
+        desc: "Queso semiduro de sabor suave, ideal para fetear en sándwiches y picadas. Elaborado por Lácteos La Chacra (Colonia Cavour, Santa Fe).",
+        hasTextureOption: false,
+        items: [
+          { name: "BARRA (PESO A CONSULTAR)", price: null }
+        ]
+      },
+      {
+        id: "lc_queso_pategras",
+        category: "LÁCTEOS LA CHACRA - QUESOS",
+        title: "LÁCTEOS LA CHACRA - Queso Pategrás",
+        badge: "Semiduro",
+        image: "lacteos/pategras.jpg",
+        desc: "Queso de pasta firme, semidura y semicocida, salado y estacionado. Elaborado por Lácteos La Chacra (Colonia Cavour, Santa Fe).",
+        hasTextureOption: false,
+        items: [
+          { name: "HORMA (PESO A CONSULTAR)", price: null }
+        ]
+      },
+      {
+        id: "lc_queso_por_salut",
+        category: "LÁCTEOS LA CHACRA - QUESOS",
+        title: "LÁCTEOS LA CHACRA - Queso Por Salut",
+        badge: "Blando",
+        image: "lacteos/por-salut.jpg",
+        desc: "Queso de pasta blanda y cremosa, se funde muy bien. Elaborado por Lácteos La Chacra (Colonia Cavour, Santa Fe).",
+        hasTextureOption: false,
+        items: [
+          { name: "HORMA (PESO A CONSULTAR)", price: null }
+        ]
+      },
+      {
+        id: "lc_queso_sardo",
+        category: "LÁCTEOS LA CHACRA - QUESOS",
+        title: "LÁCTEOS LA CHACRA - Queso Sardo",
+        badge: "Duro",
+        image: "lacteos/sardo.jpg",
+        desc: "Queso de pasta dura y sabor intenso, ideal para rallar. Elaborado por Lácteos La Chacra (Colonia Cavour, Santa Fe).",
+        hasTextureOption: false,
+        items: [
+          { name: "HORMA (PESO A CONSULTAR)", price: null }
+        ]
+      },
+      {
+        id: "lc_queso_cremoso",
+        category: "LÁCTEOS LA CHACRA - QUESOS",
+        title: "LÁCTEOS LA CHACRA - Queso Cremoso",
+        badge: "Blando",
+        image: "lacteos/cremoso.jpg",
+        desc: "Queso cremoso clásico de pasta blanda y sabor suave. Elaborado por Lácteos La Chacra (Colonia Cavour, Santa Fe).",
+        hasTextureOption: false,
+        items: [
+          { name: "HORMA (PESO A CONSULTAR)", price: null }
+        ]
+      },
+      {
+        id: "lc_queso_cheddar",
+        category: "LÁCTEOS LA CHACRA - QUESOS",
+        title: "LÁCTEOS LA CHACRA - Queso Cheddar",
+        badge: "Semiduro",
+        image: "lacteos/cheddar.jpg",
+        desc: "Queso anaranjado de sabor característico, ideal para hamburguesas. Elaborado por Lácteos La Chacra (Colonia Cavour, Santa Fe).",
+        hasTextureOption: false,
+        items: [
+          { name: "BARRA (PESO A CONSULTAR)", price: null }
+        ]
+      },
+      {
+        id: "lc_queso_mozzarella",
+        category: "LÁCTEOS LA CHACRA - QUESOS",
+        title: "LÁCTEOS LA CHACRA - Queso Mozzarella",
+        badge: "Pasta hilada",
+        image: "lacteos/mozzarella.jpg",
+        desc: "Mozzarella de pasta hilada, funde y estira parejo. Ideal para pizza. Elaborado por Lácteos La Chacra (Colonia Cavour, Santa Fe).",
+        hasTextureOption: false,
+        items: [
+          { name: "BARRA (PESO A CONSULTAR)", price: null }
+        ]
       }
     ];
 
@@ -289,6 +376,7 @@
     let currentFilter = 'ALL';
 
     function formatPrice(val) {
+      if (val == null) return 'Consultar precio';
       return '$' + val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
@@ -409,7 +497,7 @@
       const cartTotal = document.getElementById('cart-total');
 
       const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const totalPrice = cart.reduce((sum, item) => sum + ((item.price || 0) * item.qty), 0);
 
       cartCount.innerText = totalItems;
       cartCount.classList.toggle('hidden', totalItems === 0);
@@ -436,7 +524,7 @@
                 <input type="number" min="1" value="${item.qty}" onchange="setQty('${item.cartKey}', this.value)" class="w-12 text-center text-xs font-black text-stone-900 outline-none bg-transparent">
                 <button onclick="changeQty('${item.cartKey}', 1)" class="px-2.5 py-1 text-stone-600 hover:bg-stone-100 font-black text-xs transition">+</button>
               </div>
-              <span class="font-black text-amber-950 text-sm">${formatPrice(item.price * item.qty)}</span>
+              <span class="font-black text-amber-950 text-sm">${formatPrice(item.price == null ? null : item.price * item.qty)}</span>
             </div>
           </div>
         `).join('');
@@ -510,12 +598,16 @@
           message += `   • Variante: *${item.texture}*\n`;
         }
         message += `   • Cantidad: ${item.qty} pack(s)\n`;
-        message += `   • Subtotal: ${formatPrice(item.price * item.qty)}\n\n`;
+        message += `   • Subtotal: ${formatPrice(item.price == null ? null : item.price * item.qty)}\n\n`;
       });
 
-      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const total = cart.reduce((sum, item) => sum + ((item.price || 0) * item.qty), 0);
       message += "=============================\n";
-      message += `*TOTAL DEL PEDIDO (Consumidor Final C/IVA): ${formatPrice(total)}*\n\n`;
+      message += `*TOTAL DEL PEDIDO (Consumidor Final C/IVA): ${formatPrice(total)}*\n`;
+      if (cart.some(item => item.price == null)) {
+        message += "(Sin incluir los productos a consultar precio)\n";
+      }
+      message += "\n";
       message += "Quedo a la espera de la confirmación de stock, medio de pago y coordinación del envío. ¡Gracias!";
 
       window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
