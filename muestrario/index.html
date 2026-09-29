@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Melesia · Catálogo de productos</title>
+  <meta name="description" content="Catálogo de productos Melesia: miel pura, miel mezcla y dulce de leche de fábrica. Consultá por WhatsApp.">
+  <meta property="og:title" content="Melesia · Catálogo de productos">
+  <meta property="og:description" content="Miel pura, miel mezcla y dulce de leche directo de fábrica.">
+  <meta property="og:image" content="../Banner-Portada.jpg">
+  <meta name="theme-color" content="#3f5a18">
+  <link rel="icon" href="../Logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde: #3f5a18;
+      --verde-2: #5b7f24;
+      --verde-claro: #eef3e4;
+      --miel: #e9a520;
+      --miel-oscura: #9a5b0b;
+      --crema: #fbf7ee;
+      --tinta: #231f16;
+      --gris: #6d6658;
+      --borde: #e7dfcd;
+      --blanco: #ffffff;
+      --wa: #25d366;
+      --wa-oscuro: #128c4b;
+      --sombra: 0 10px 30px -12px rgba(60, 40, 0, .25);
+      --radio: 18px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: var(--crema);
+      color: var(--tinta);
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    button { font: inherit; cursor: pointer; }
+    .contenedor { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+
+    /* Encabezado */
+    .cabecera {
+      position: sticky; top: 0; z-index: 30;
+      background: rgba(255, 255, 255, .92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--borde);
+    }
+    .cabecera .contenedor { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 64px; }
+    .marca { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+    .marca .logo { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--borde); background: #fff; overflow: hidden; flex: none; }
+    .marca .logo img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.9); }
+    .marca b { font-size: 1.15rem; color: var(--verde); letter-spacing: -.01em; display: block; line-height: 1; }
+    .marca small { font-size: .7rem; color: var(--gris); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+    .acciones-cabecera { display: flex; gap: 8px; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      border: 0; border-radius: 999px; padding: 11px 18px;
+      font-weight: 700; font-size: .92rem; text-decoration: none; transition: transform .15s, background .15s, box-shadow .15s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-wa { background: var(--wa); color: #fff; box-shadow: 0 8px 20px -10px rgba(18, 140, 75, .8); }
+    .btn-wa:hover { background: var(--wa-oscuro); }
+    .btn-borde { background: #fff; color: var(--verde); border: 1.5px solid var(--verde); }
+    .btn-borde:hover { background: var(--verde-claro); }
+    .btn-verde { background: var(--verde); color: #fff; }
+    .btn-verde:hover { background: var(--verde-2); }
+    .icono { width: 18px; height: 18px; flex: none; }
+    .lista-btn { position: relative; }
+    .contador {
+      position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; padding: 0 6px;
+      border-radius: 999px; background: var(--miel); color: var(--tinta); font-size: .75rem; font-weight: 800;
+      display: none; align-items: center; justify-content: center; border: 2px solid #fff;
+    }
+    .contador.visible { display: inline-flex; }
+    .solo-escritorio { display: none; }
+    @media (min-width: 720px) { .solo-escritorio { display: inline; } }
+
+    /* Portada */
+    .portada { position: relative; min-height: 360px; display: flex; align-items: flex-end; overflow: hidden; }
+    .portada > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% center; }
+    .portada::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(35, 26, 5, .85) 0%, rgba(35, 26, 5, .55) 45%, rgba(35, 26, 5, 0) 80%); }
+    .portada .contenedor { position: relative; z-index: 1; padding-top: 48px; padding-bottom: 48px; color: #fff; width: 100%; }
+    .portada .etiqueta { display: inline-block; background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .3); padding: 6px 12px; border-radius: 999px; font-size: .78rem; font-weight: 700; letter-spacing: .04em; }
+    .portada h1 { font-size: clamp(1.9rem, 5vw, 3.1rem); line-height: 1.08; margin: 14px 0 12px; max-width: 16ch; letter-spacing: -.02em; }
+    .portada p { max-width: 46ch; margin: 0 0 22px; color: rgba(255, 255, 255, .88); font-size: 1.02rem; line-height: 1.55; }
+    .portada .botones { display: flex; flex-wrap: wrap; gap: 10px; }
+    .portada .btn-borde { background: rgba(255, 255, 255, .95); border-color: transparent; }
+    @media (max-width: 640px) {
+      .portada::after { background: linear-gradient(0deg, rgba(35, 26, 5, .9) 0%, rgba(35, 26, 5, .5) 60%, rgba(35, 26, 5, .15) 100%); }
+      .portada { min-height: 440px; }
+    }
+
+    /* Beneficios */
+    .beneficios { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: -28px auto 0; position: relative; z-index: 2; }
+    @media (min-width: 820px) { .beneficios { grid-template-columns: repeat(4, 1fr); } }
+    .beneficio { background: #fff; border: 1px solid var(--borde); border-radius: 14px; padding: 14px; display: flex; gap: 10px; align-items: center; box-shadow: var(--sombra); }
+    .beneficio .icono { width: 34px; height: 34px; padding: 7px; border-radius: 10px; background: var(--verde-claro); color: var(--verde); }
+    .beneficio b { font-size: .88rem; display: block; }
+    .beneficio span { font-size: .76rem; color: var(--gris); }
+
+    /* Herramientas */
+    .seccion { padding: 44px 0 20px; }
+    .seccion h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); margin: 0 0 6px; letter-spacing: -.01em; }
+    .seccion .bajada { color: var(--gris); margin: 0 0 22px; }
+    .herramientas { display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+    .buscador { position: relative; }
+    .buscador input {
+      width: 100%; padding: 15px 44px 15px 46px; border-radius: 14px; border: 1.5px solid var(--borde);
+      background: #fff; font: inherit; font-size: 1rem; color: var(--tinta); outline: none; transition: border-color .15s, box-shadow .15s;
+    }
+    .buscador input:focus { border-color: var(--verde-2); box-shadow: 0 0 0 4px rgba(91, 127, 36, .15); }
+    .buscador .icono { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gris); }
+    .buscador .limpiar { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--gris); padding: 8px; display: none; border-radius: 8px; }
+    .buscador .limpiar.visible { display: block; }
+    .chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip {
+      flex: none; border: 1.5px solid var(--borde); background: #fff; color: var(--tinta);
+      padding: 9px 16px; border-radius: 999px; font-weight: 700; font-size: .88rem; transition: all .15s;
+    }
+    .chip:hover { border-color: var(--verde-2); }
+    .chip[aria-pressed="true"] { background: var(--verde); border-color: var(--verde); color: #fff; }
+    .chip .n { opacity: .6; font-weight: 600; margin-left: 4px; }
+
+    /* Grilla */
+    .grilla { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    @media (min-width: 600px) { .grilla { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 980px) { .grilla { grid-template-columns: repeat(3, 1fr); } }
+    .tarjeta {
+      background: #fff; border: 1px solid var(--borde); border-radius: var(--radio); overflow: hidden;
+      display: flex; flex-direction: column; transition: box-shadow .2s, transform .2s;
+    }
+    .tarjeta:hover { box-shadow: var(--sombra); transform: translateY(-2px); }
+    .tarjeta .foto { position: relative; aspect-ratio: 4 / 3; background: #f3ecdc; overflow: hidden; border: 0; padding: 0; width: 100%; }
+    .tarjeta .foto img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .tarjeta:hover .foto img { transform: scale(1.04); }
+    .insignia { position: absolute; top: 12px; left: 12px; background: rgba(255, 255, 255, .95); color: var(--tinta); font-size: .74rem; font-weight: 800; padding: 6px 10px; border-radius: 10px; }
+    .insignia.destacada { background: var(--miel); }
+    .tarjeta .cuerpo { padding: 18px 18px 8px; flex: 1; }
+    .tarjeta .linea { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .09em; color: var(--verde-2); }
+    .tarjeta h3 { margin: 4px 0 8px; font-size: 1.2rem; letter-spacing: -.01em; }
+    .tarjeta p { margin: 0 0 14px; color: var(--gris); font-size: .9rem; line-height: 1.5; }
+    .pastillas { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pastilla { font-size: .75rem; font-weight: 700; padding: 5px 9px; border-radius: 8px; background: var(--crema); border: 1px solid var(--borde); color: var(--miel-oscura); }
+    .tarjeta .pie { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 14px 18px 18px; }
+    .tarjeta .pie .btn { padding: 11px 10px; font-size: .86rem; }
+    .vacio { text-align: center; padding: 50px 16px; color: var(--gris); background: #fff; border: 1px dashed var(--borde); border-radius: var(--radio); display: none; }
+    .vacio.visible { display: block; }
+
+    /* Cierre comercial */
+    .cierre { margin: 40px 0 0; background: var(--verde); color: #fff; border-radius: 22px; padding: 30px 22px; display: grid; gap: 18px; align-items: center; }
+    @media (min-width: 820px) { .cierre { grid-template-columns: 1.4fr 1fr; padding: 40px; } }
+    .cierre h2 { margin: 0 0 8px; font-size: clamp(1.3rem, 3vw, 1.8rem); }
+    .cierre p { margin: 0; color: rgba(255, 255, 255, .85); line-height: 1.55; }
+    .cierre .botones { display: flex; flex-wrap: wrap; gap: 10px; }
+    @media (min-width: 820px) { .cierre .botones { justify-content: flex-end; } }
+    .cierre .btn-borde { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .6); }
+    .cierre .btn-borde:hover { background: rgba(255, 255, 255, .1); }
+
+    footer { padding: 36px 0 110px; color: var(--gris); font-size: .85rem; text-align: center; }
+    footer a { color: var(--verde); font-weight: 700; }
+
+    /* Botón flotante */
+    .flotante {
+      position: fixed; right: 16px; bottom: 16px; z-index: 40; width: 60px; height: 60px; border-radius: 50%;
+      background: var(--wa); color: #fff; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 12px 28px -8px rgba(18, 140, 75, .7); text-decoration: none; transition: transform .15s;
+    }
+    .flotante:hover { transform: scale(1.06); }
+    .flotante .icono { width: 30px; height: 30px; }
+
+    /* Ficha (modal) */
+    .capa { position: fixed; inset: 0; z-index: 50; background: rgba(25, 18, 5, .6); backdrop-filter: blur(4px); display: none; align-items: flex-end; justify-content: center; }
+    .capa.abierta { display: flex; }
+    @media (min-width: 760px) { .capa { align-items: center; padding: 24px; } }
+    .ficha {
+      background: #fff; width: 100%; max-width: 960px; max-height: 92vh; overflow-y: auto;
+      border-radius: 22px 22px 0 0; position: relative; animation: subir .25s ease-out;
+    }
+    @media (min-width: 760px) { .ficha { border-radius: 22px; display: grid; grid-template-columns: 1fr 1fr; max-height: 88vh; } }
+    @keyframes subir { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .ficha .foto-grande { background: #f3ecdc; aspect-ratio: 4 / 3; }
+    .ficha .foto-grande img { width: 100%; height: 100%; object-fit: cover; }
+    @media (min-width: 760px) { .ficha .foto-grande { aspect-ratio: auto; height: 100%; min-height: 460px; display: flex; align-items: center; position: relative; overflow: hidden; }
+      .ficha .foto-grande::before { content: ""; position: absolute; inset: -30px; background: var(--fondo) center / cover; filter: blur(24px) brightness(.9); }
+      .ficha .foto-grande > img { object-fit: contain; height: auto; position: relative; } }
+    .ficha .info { padding: 24px 20px 28px; }
+    @media (min-width: 760px) { .ficha .info { padding: 32px; overflow-y: auto; } }
+    .ficha h2 { margin: 6px 0 10px; font-size: 1.6rem; letter-spacing: -.01em; }
+    .ficha .desc { color: var(--gris); line-height: 1.6; margin: 0 0 18px; }
+    .ficha h4 { margin: 20px 0 10px; font-size: .78rem; text-transform: uppercase; letter-spacing: .09em; color: var(--gris); }
+    .cerrar {
+      position: absolute; top: 12px; right: 12px; z-index: 2; width: 40px; height: 40px; border-radius: 50%;
+      border: 0; background: rgba(255, 255, 255, .95); box-shadow: 0 4px 14px rgba(0, 0, 0, .15); display: flex; align-items: center; justify-content: center;
+    }
+    .presentaciones { display: grid; gap: 8px; }
+    .presentacion {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px;
+      border: 1.5px solid var(--borde); border-radius: 12px; cursor: pointer; transition: all .15s;
+    }
+    .presentacion:hover { border-color: var(--verde-2); }
+    .presentacion input { accent-color: var(--verde); width: 18px; height: 18px; margin: 0; }
+    .presentacion .izq { display: flex; align-items: center; gap: 10px; }
+    .presentacion b { font-size: .95rem; }
+    .presentacion span { font-size: .8rem; color: var(--gris); }
+    .presentacion:has(input:checked) { border-color: var(--verde); background: var(--verde-claro); }
+    .variantes { display: flex; gap: 8px; flex-wrap: wrap; }
+    .caracteristicas { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+    .caracteristicas li { display: flex; gap: 8px; align-items: flex-start; font-size: .9rem; line-height: 1.45; }
+    .caracteristicas .icono { color: var(--verde-2); margin-top: 1px; }
+    .ficha .acciones { display: grid; gap: 8px; margin-top: 24px; }
+    .ficha .acciones .btn { white-space: nowrap; padding-left: 12px; padding-right: 12px; }
+    @media (min-width: 420px) { .ficha .acciones { grid-template-columns: 1fr 1fr; } }
+    .compartir { margin-top: 12px; background: none; border: 0; color: var(--verde); font-weight: 700; font-size: .85rem; display: inline-flex; gap: 6px; align-items: center; padding: 6px 0; }
+
+    /* Panel de consulta */
+    .panel {
+      position: fixed; top: 0; right: 0; bottom: 0; z-index: 60; width: min(420px, 100%); background: #fff;
+      transform: translateX(100%); transition: transform .25s ease; display: flex; flex-direction: column;
+      box-shadow: -10px 0 40px rgba(0, 0, 0, .2);
+    }
+    .panel.abierto { transform: none; }
+    .panel header { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--borde); }
+    .panel header h3 { margin: 0; font-size: 1.1rem; }
+    .panel .items { flex: 1; overflow-y: auto; padding: 16px 20px; display: grid; gap: 12px; align-content: start; }
+    .item { display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--borde); }
+    .item img { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; }
+    .item b { font-size: .9rem; display: block; }
+    .item span { font-size: .8rem; color: var(--gris); }
+    .cantidad { display: flex; align-items: center; border: 1px solid var(--borde); border-radius: 10px; overflow: hidden; margin-top: 6px; width: max-content; }
+    .cantidad button { border: 0; background: var(--crema); width: 30px; height: 30px; font-weight: 800; }
+    .cantidad output { min-width: 32px; text-align: center; font-weight: 800; font-size: .88rem; }
+    .quitar { border: 0; background: none; color: var(--gris); padding: 6px; border-radius: 8px; }
+    .quitar:hover { color: #b3261e; background: #fdecea; }
+    .panel footer { padding: 16px 20px 20px; border-top: 1px solid var(--borde); text-align: left; display: grid; gap: 10px; }
+    .panel footer label { font-size: .8rem; font-weight: 700; color: var(--gris); }
+    .panel footer input { width: 100%; padding: 11px 12px; border-radius: 10px; border: 1.5px solid var(--borde); font: inherit; }
+    .panel .vacia { color: var(--gris); text-align: center; padding: 50px 10px; font-size: .92rem; }
+    .fondo-panel { position: fixed; inset: 0; z-index: 55; background: rgba(25, 18, 5, .45); display: none; }
+    .fondo-panel.visible { display: block; }
+
+    .aviso {
+      position: fixed; left: 50%; bottom: 90px; transform: translate(-50%, 20px); z-index: 70; opacity: 0; pointer-events: none;
+      background: var(--tinta); color: #fff; padding: 12px 18px; border-radius: 12px; font-size: .9rem; font-weight: 600; transition: all .2s;
+      max-width: calc(100% - 32px);
+    }
+    .aviso.visible { opacity: 1; transform: translate(-50%, 0); }
+
+    :focus-visible { outline: 3px solid var(--miel); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <!-- Iconos -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35M12.05 21.5h-.01a9.4 9.4 0 0 1-4.8-1.31l-.34-.2-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.01c0-5.2 4.23-9.43 9.44-9.43a9.37 9.37 0 0 1 6.67 2.77 9.37 9.37 0 0 1 2.76 6.67c0 5.2-4.24 9.42-9.44 9.42m8.02-17.44A11.26 11.26 0 0 0 12.05.75C5.8.75.7 5.84.7 12.1c0 2 .52 3.95 1.52 5.67L.6 23.64l6-1.57a11.3 11.3 0 0 0 5.43 1.38h.01c6.25 0 11.35-5.09 11.35-11.35 0-3.03-1.18-5.88-3.32-8.03"/></symbol>
+    <symbol id="i-buscar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-lista" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></symbol>
+    <symbol id="i-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-fabrica" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 21V10l6 4V10l6 4V6l6 3v12z"/><path d="M3 21h18"/></symbol>
+    <symbol id="i-caja" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 8 4v10l-8 4-8-4V7z"/><path d="m4 7 8 4 8-4M12 11v10"/></symbol>
+    <symbol id="i-camion" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M2 6h11v10H2zM13 10h4l4 4v2h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+    <symbol id="i-hoja" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19C5 10 10 5 20 4c-1 10-6 15-15 15z"/><path d="M5 19 13 11"/></symbol>
+    <symbol id="i-compartir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></symbol>
+    <symbol id="i-basura" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  </svg>
+
+  <header class="cabecera">
+    <div class="contenedor">
+      <a class="marca" href="#inicio" aria-label="Melesia, inicio">
+        <span class="logo"><img src="../Logo.jpg" alt=""></span>
+        <span><b>Melesia</b><small>Catálogo de fábrica</small></span>
+      </a>
+      <div class="acciones-cabecera">
+        <button class="btn btn-borde lista-btn" id="abrir-lista" aria-label="Ver mi consulta">
+          <svg class="icono"><use href="#i-lista"/></svg><span class="solo-escritorio">Mi consulta</span>
+          <span class="contador" id="contador">0</span>
+        </button>
+        <a class="btn btn-wa" data-wa="general" href="#" target="_blank" rel="noopener">
+          <svg class="icono"><use href="#i-wa"/></svg><span class="solo-escritorio">Escribinos</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="portada">
+      <img src="../Banner-Portada.jpg" alt="Frasco de miel con panal y flores">
+      <div class="contenedor">
+        <span class="etiqueta">Industria Argentina · Venta mayorista</span>
+        <h1>Miel pura, miel mezcla y dulce de leche directo de fábrica</h1>
+        <p>Conocé nuestras marcas y presentaciones. Elegí lo que te interesa y armá tu consulta por WhatsApp en un minuto.</p>
+        <div class="botones">
+          <a class="btn btn-wa" href="#productos"><svg class="icono"><use href="#i-caja"/></svg>Ver productos</a>
+          <a class="btn btn-borde" data-wa="general" href="#" target="_blank" rel="noopener"><svg class="icono"><use href="#i-wa"/></svg>Hablar con un asesor</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="contenedor">
+      <div class="beneficios">
+        <div class="beneficio"><svg class="icono"><use href="#i-fabrica"/></svg><div><b>Precio de fábrica</b><span>Sin intermediarios</span></div></div>
+        <div class="beneficio"><svg class="icono"><use href="#i-caja"/></svg><div><b>Packs cerrados</b><span>Listos para góndola</span></div></div>
+        <div class="beneficio"><svg class="icono"><use href="#i-hoja"/></svg><div><b>3 marcas</b><span>Para cada segmento</span></div></div>
+        <div class="beneficio"><svg class="icono"><use href="#i-camion"/></svg><div><b>Envíos coordinados</b><span>A comercios y distribuidores</span></div></div>
+      </div>
+
+      <section class="seccion" id="productos">
+        <h2>Nuestros productos</h2>
+        <p class="bajada">Tocá un producto para ver la ficha completa con sus presentaciones.</p>
+
+        <div class="herramientas">
+          <div class="buscador">
+            <svg class="icono"><use href="#i-buscar"/></svg>
+            <input type="search" id="buscar" placeholder="Buscar por marca, producto o tamaño (ej. 500 g)" autocomplete="off" aria-label="Buscar productos">
+            <button class="limpiar" id="limpiar" aria-label="Borrar búsqueda"><svg class="icono"><use href="#i-x"/></svg></button>
+          </div>
+          <div class="chips" id="chips" role="group" aria-label="Filtrar por categoría"></div>
+        </div>
+
+        <div class="grilla" id="grilla"></div>
+        <div class="vacio" id="vacio">
+          <p><b>No encontramos productos con esa búsqueda.</b></p>
+          <p>¿Buscás algo en particular? Escribinos y te ayudamos.</p>
+          <a class="btn btn-wa" data-wa="general" href="#" target="_blank" rel="noopener"><svg class="icono"><use href="#i-wa"/></svg>Consultar por WhatsApp</a>
+        </div>
+      </section>
+
+      <section class="cierre">
+        <div>
+          <h2>¿Querés sumar Melesia a tu comercio?</h2>
+          <p>Te pasamos la lista de precios mayorista, condiciones de pago y envío. Si ya sos cliente, ingresá con tu código para ver tus precios.</p>
+        </div>
+        <div class="botones">
+          <a class="btn btn-wa" data-wa="precios" href="#" target="_blank" rel="noopener"><svg class="icono"><use href="#i-wa"/></svg>Pedir lista de precios</a>
+          <a class="btn btn-borde" href="../">Soy cliente</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="contenedor">
+      <p>© <span id="anio"></span> Melesia · Industria Argentina</p>
+      <p>Las imágenes son ilustrativas. Consultá disponibilidad de stock.</p>
+    </div>
+  </footer>
+
+  <a class="flotante" data-wa="general" href="#" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp">
+    <svg class="icono"><use href="#i-wa"/></svg>
+  </a>
+
+  <!-- Ficha de producto -->
+  <div class="capa" id="capa" role="dialog" aria-modal="true" aria-labelledby="ficha-titulo">
+    <article class="ficha" id="ficha"></article>
+  </div>
+
+  <!-- Panel de consulta -->
+  <div class="fondo-panel" id="fondo-panel"></div>
+  <aside class="panel" id="panel" aria-label="Mi consulta" aria-hidden="true">
+    <header>
+      <h3>Mi consulta</h3>
+      <button class="quitar" id="cerrar-panel" aria-label="Cerrar"><svg class="icono"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="items" id="items"></div>
+    <footer>
+      <label for="negocio">Tu nombre o comercio (opcional)</label>
+      <input id="negocio" placeholder="Ej. Almacén Don José, Rosario">
+      <button class="btn btn-wa" id="enviar"><svg class="icono"><use href="#i-wa"/></svg>Enviar consulta por WhatsApp</button>
+    </footer>
+  </aside>
+
+  <div class="aviso" id="aviso" role="status" aria-live="polite"></div>
+
+  <script>
+    // Número de WhatsApp comercial (formato internacional, sin + ni espacios)
+    const TELEFONO = '5491131311470';
+
+    const CATEGORIAS = [
+      { id: 'todos', nombre: 'Todos' },
+      { id: 'miel', nombre: 'Miel de abejas' },
+      { id: 'miel-mezcla', nombre: 'Miel mezcla' },
+      { id: 'dulce-de-leche', nombre: 'Dulce de leche' }
+    ];
+
+    // Catálogo. Las presentaciones son packs cerrados de venta mayorista.
+    const PRODUCTOS = [
+      {
+        id: 'flor-de-campo-miel',
+        marca: 'Flor de Campo',
+        nombre: 'Miel de Abejas',
+        categoria: 'miel',
+        insignia: '100% miel pura',
+        destacada: true,
+        imagen: '../FDC-Miel-Portada.jpg',
+        resumen: 'Nuestra miel pura de abejas, disponible líquida o cremosa.',
+        descripcion: 'Miel de abejas seleccionada, envasada en frasco con faja de garantía. Es nuestro producto premium, pensado para dietéticas, almacenes y góndolas que buscan un producto natural de calidad.',
+        caracteristicas: ['100% miel pura de abejas', 'Consistencia líquida o cremosa', 'Frasco con faja de garantía', 'Industria Argentina'],
+        variantes: ['Líquida', 'Cremosa'],
+        presentaciones: [
+          { peso: '250 g', pack: '12 unidades' },
+          { peso: '500 g', pack: '12 unidades' },
+          { peso: '1000 g', pack: '6 unidades' }
+        ]
+      },
+      {
+        id: 'flor-de-campo-untable',
+        marca: 'Flor de Campo',
+        nombre: 'Untable con miel',
+        categoria: 'miel-mezcla',
+        insignia: 'Con 33% de miel',
+        imagen: '../FDC-Mezcla-Portada.jpg',
+        resumen: 'Endulzante untable a base de jarabe de maíz con miel.',
+        descripcion: 'Endulzante a base de jarabe de maíz con miel, en una mezcla balanceada con 33% de miel. El sabor de la miel a un precio más accesible, ideal para desayunos y repostería.',
+        caracteristicas: ['Mezcla con 33% de miel', 'Textura untable', 'Frasco con tapa a rosca', 'Industria Argentina'],
+        presentaciones: [
+          { peso: '250 g', pack: '12 unidades' },
+          { peso: '500 g', pack: '12 unidades' },
+          { peso: '1000 g', pack: '6 unidades' }
+        ]
+      },
+      {
+        id: 'la-chacra-pet',
+        marca: 'La Chacra',
+        nombre: 'Miel Mezcla en botella',
+        categoria: 'miel-mezcla',
+        insignia: 'Botella PET',
+        imagen: '../Chacra-Portada.jpg',
+        resumen: 'Mezcla de miel y jarabe de maíz en botella práctica.',
+        descripcion: 'Mezcla de miel y jarabe de maíz en botellas PET livianas e irrompibles. La línea con más presentaciones: desde 350 g para el hogar hasta 1500 g para gastronomía y uso comercial.',
+        caracteristicas: ['Botella PET irrompible', 'Pico dosificador práctico', '5 tamaños disponibles', 'Industria Argentina'],
+        presentaciones: [
+          { peso: '350 g', pack: '12 unidades' },
+          { peso: '500 g', pack: '12 unidades' },
+          { peso: '750 g', pack: '12 unidades' },
+          { peso: '1000 g', pack: '8 unidades' },
+          { peso: '1500 g', pack: '6 unidades' }
+        ]
+      },
+      {
+        id: 'pampera',
+        marca: 'Pampera',
+        nombre: 'Miel Mezcla en pote',
+        categoria: 'miel-mezcla',
+        insignia: 'Precio accesible',
+        imagen: '../Pampera-Portada.jpg',
+        resumen: 'Mezcla de miel y jarabe de maíz en pote tradicional.',
+        descripcion: 'Mezcla de miel y jarabe de maíz en pote con tapa. Nuestra línea económica, de alta rotación, pensada para almacenes y autoservicios.',
+        caracteristicas: ['Pote con tapa a presión', 'Línea económica de alta rotación', 'Industria Argentina'],
+        presentaciones: [
+          { peso: '250 g', pack: '12 unidades' },
+          { peso: '500 g', pack: '12 unidades' }
+        ]
+      },
+      {
+        id: 'la-chacra-dulce-de-leche',
+        marca: 'La Chacra',
+        nombre: 'Dulce de Leche',
+        categoria: 'dulce-de-leche',
+        insignia: 'Sin gluten',
+        imagen: '../DDL-Chara-Portada.jpg',
+        resumen: 'Dulce de leche libre de gluten en pote de 400 g.',
+        descripcion: 'Dulce de leche clásico, libre de gluten, en pote de 400 g. Elaborado bajo altos estándares de calidad, ideal para acompañar la línea de miel en tu góndola.',
+        caracteristicas: ['Libre de gluten', 'Pote de 400 g', 'Industria Argentina'],
+        presentaciones: [
+          { peso: '400 g', pack: '12 unidades' }
+        ]
+      }
+    ];
+
+    const estado = { categoria: 'todos', busqueda: '', consulta: [] };
+    const $ = (sel) => document.querySelector(sel);
+
+    function linkWhatsApp(texto) {
+      return `https://wa.me/${TELEFONO}?text=${encodeURIComponent(texto)}`;
+    }
+
+    const MENSAJES = {
+      general: '¡Hola Melesia! Vi el catálogo online y quiero recibir más información sobre sus productos.',
+      precios: '¡Hola Melesia! Vi el catálogo online y me interesa recibir la lista de precios mayorista y las condiciones de compra.'
+    };
+
+    function prepararLinksGenerales() {
+      document.querySelectorAll('[data-wa]').forEach(a => {
+        a.href = linkWhatsApp(MENSAJES[a.dataset.wa] || MENSAJES.general);
+      });
+    }
+
+    function normalizar(texto) {
+      return texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ');
+    }
+
+    function textoBuscable(p) {
+      const cat = CATEGORIAS.find(c => c.id === p.categoria).nombre;
+      const pres = p.presentaciones.map(x => `${x.peso} ${x.peso.replace(' ', '')} ${x.pack}`).join(' ');
+      return normalizar([p.marca, p.nombre, cat, p.insignia, p.resumen, p.descripcion, (p.variantes || []).join(' '), pres].join(' '));
+    }
+
+    function filtrados() {
+      const terminos = normalizar(estado.busqueda).trim().split(' ').filter(Boolean);
+      return PRODUCTOS.filter(p => {
+        if (estado.categoria !== 'todos' && p.categoria !== estado.categoria) return false;
+        const texto = textoBuscable(p);
+        return terminos.every(t => texto.includes(t));
+      });
+    }
+
+    function pintarChips() {
+      $('#chips').innerHTML = CATEGORIAS.map(c => {
+        const n = c.id === 'todos' ? PRODUCTOS.length : PRODUCTOS.filter(p => p.categoria === c.id).length;
+        return `<button class="chip" data-cat="${c.id}" aria-pressed="${estado.categoria === c.id}">${c.nombre}<span class="n">${n}</span></button>`;
+      }).join('');
+    }
+
+    function pintarGrilla() {
+      const lista = filtrados();
+      $('#grilla').innerHTML = lista.map(p => `
+        <article class="tarjeta">
+          <button class="foto" data-abrir="${p.id}" aria-label="Ver ficha de ${p.marca} ${p.nombre}">
+            <img src="${p.imagen}" alt="${p.marca} ${p.nombre}" loading="lazy">
+            <span class="insignia${p.destacada ? ' destacada' : ''}">${p.insignia}</span>
+          </button>
+          <div class="cuerpo">
+            <span class="linea">${p.marca}</span>
+            <h3>${p.nombre}</h3>
+            <p>${p.resumen}</p>
+            <div class="pastillas">${[...new Set(p.presentaciones.map(x => x.peso))].map(w => `<span class="pastilla">${w}</span>`).join('')}</div>
+          </div>
+          <div class="pie">
+            <button class="btn btn-borde" data-abrir="${p.id}">Ver ficha</button>
+            <a class="btn btn-wa" href="${linkWhatsApp(`¡Hola Melesia! Me interesa ${p.marca} ${p.nombre}. ¿Me pasan precios y condiciones?`)}" target="_blank" rel="noopener"><svg class="icono"><use href="#i-wa"/></svg>Consultar</a>
+          </div>
+        </article>
+      `).join('');
+      $('#vacio').classList.toggle('visible', lista.length === 0);
+    }
+
+    // Ficha de producto
+    let ultimoFoco = null;
+
+    function abrirFicha(id, actualizarUrl = true) {
+      const p = PRODUCTOS.find(x => x.id === id);
+      if (!p) return;
+      ultimoFoco = document.activeElement;
+      $('#ficha').innerHTML = `
+        <button class="cerrar" data-cerrar aria-label="Cerrar ficha"><svg class="icono"><use href="#i-x"/></svg></button>
+        <div class="foto-grande" style="--fondo: url('${p.imagen}')"><img src="${p.imagen}" alt="${p.marca} ${p.nombre}"></div>
+        <div class="info">
+          <span class="linea" style="font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--verde-2)">${p.marca} · ${CATEGORIAS.find(c => c.id === p.categoria).nombre}</span>
+          <h2 id="ficha-titulo">${p.nombre}</h2>
+          <p class="desc">${p.descripcion}</p>
+          <ul class="caracteristicas">${p.caracteristicas.map(c => `<li><svg class="icono"><use href="#i-ok"/></svg>${c}</li>`).join('')}</ul>
+
+          <h4>Presentaciones (pack cerrado)</h4>
+          <div class="presentaciones">
+            ${p.presentaciones.map((x, i) => `
+              <label class="presentacion">
+                <span class="izq"><input type="radio" name="pres" value="${i}" ${i === 0 ? 'checked' : ''}><b>${x.peso}</b></span>
+                <span>Caja x ${x.pack}</span>
+              </label>`).join('')}
+          </div>
+
+          ${p.variantes ? `
+            <h4>Consistencia</h4>
+            <div class="variantes">
+              ${p.variantes.map((v, i) => `<button class="chip" data-variante="${v}" aria-pressed="${i === 0}">${v}</button>`).join('')}
+            </div>` : ''}
+
+          <div class="acciones">
+            <button class="btn btn-verde" id="agregar"><svg class="icono"><use href="#i-mas"/></svg>Sumar a consulta</button>
+            <a class="btn btn-wa" id="consultar-ya" href="#" target="_blank" rel="noopener"><svg class="icono"><use href="#i-wa"/></svg>Consultar ahora</a>
+          </div>
+          <button class="compartir" id="compartir"><svg class="icono"><use href="#i-compartir"/></svg>Compartir este producto</button>
+        </div>
+      `;
+
+      const seleccion = () => {
+        const pres = p.presentaciones[+$('#ficha input[name="pres"]:checked').value];
+        const variante = p.variantes ? $('#ficha [data-variante][aria-pressed="true"]').dataset.variante : null;
+        return { pres, variante };
+      };
+      const actualizarConsultaYa = () => {
+        const { pres, variante } = seleccion();
+        $('#consultar-ya').href = linkWhatsApp(
+          `¡Hola Melesia! Me interesa ${p.marca} ${p.nombre}${variante ? ` (${variante})` : ''}, presentación ${pres.peso} en caja x ${pres.pack}. ¿Me pasan precio y condiciones?`
+        );
+      };
+      actualizarConsultaYa();
+
+      $('#ficha').onchange = actualizarConsultaYa;
+      $('#ficha').onclick = (e) => {
+        const v = e.target.closest('[data-variante]');
+        if (v) {
+          $('#ficha').querySelectorAll('[data-variante]').forEach(b => b.setAttribute('aria-pressed', b === v));
+          actualizarConsultaYa();
+        }
+        if (e.target.closest('[data-cerrar]')) cerrarFicha();
+        if (e.target.closest('#agregar')) {
+          const { pres, variante } = seleccion();
+          agregarAConsulta(p, pres, variante);
+        }
+        if (e.target.closest('#compartir')) compartir(p);
+      };
+
+      $('#capa').classList.add('abierta');
+      document.body.style.overflow = 'hidden';
+      $('#ficha').scrollTop = 0;
+      $('#ficha .cerrar').focus();
+      if (actualizarUrl) history.pushState({ ficha: id }, '', `#producto/${id}`);
+    }
+
+    function cerrarFicha(actualizarUrl = true) {
+      if (!$('#capa').classList.contains('abierta')) return;
+      $('#capa').classList.remove('abierta');
+      document.body.style.overflow = '';
+      if (actualizarUrl && location.hash.startsWith('#producto/')) history.pushState(null, '', location.pathname + location.search);
+      if (ultimoFoco) ultimoFoco.focus();
+    }
+
+    async function compartir(p) {
+      const url = `${location.origin}${location.pathname}#producto/${p.id}`;
+      const datos = { title: `${p.marca} ${p.nombre} · Melesia`, text: p.resumen, url };
+      try {
+        if (navigator.share) { await navigator.share(datos); return; }
+        await navigator.clipboard.writeText(url);
+        avisar('Enlace copiado');
+      } catch (e) { /* el usuario canceló */ }
+    }
+
+    // Consulta (lista de interés)
+    function guardarConsulta() {
+      try { localStorage.setItem('melesia-consulta', JSON.stringify(estado.consulta)); } catch (e) {}
+    }
+    function cargarConsulta() {
+      try { estado.consulta = JSON.parse(localStorage.getItem('melesia-consulta')) || []; } catch (e) { estado.consulta = []; }
+    }
+
+    function agregarAConsulta(p, pres, variante) {
+      const clave = `${p.id}|${pres.peso}|${pres.pack}|${variante || ''}`;
+      const existente = estado.consulta.find(i => i.clave === clave);
+      if (existente) existente.cantidad++;
+      else estado.consulta.push({ clave, id: p.id, titulo: `${p.marca} ${p.nombre}`, peso: pres.peso, pack: pres.pack, variante, cantidad: 1 });
+      guardarConsulta();
+      pintarConsulta();
+      avisar('Agregado a tu consulta');
+    }
+
+    function pintarConsulta() {
+      const total = estado.consulta.reduce((s, i) => s + i.cantidad, 0);
+      $('#contador').textContent = total;
+      $('#contador').classList.toggle('visible', total > 0);
+      if (!estado.consulta.length) {
+        $('#items').innerHTML = `<p class="vacia">Todavía no agregaste productos.<br>Abrí una ficha y tocá <b>Sumar a consulta</b>.</p>`;
+        $('#enviar').disabled = true;
+        $('#enviar').style.opacity = .5;
+        return;
+      }
+      $('#enviar').disabled = false;
+      $('#enviar').style.opacity = 1;
+      $('#items').innerHTML = estado.consulta.map(i => {
+        const p = PRODUCTOS.find(x => x.id === i.id);
+        return `
+          <div class="item">
+            <img src="${p.imagen}" alt="">
+            <div>
+              <b>${i.titulo}</b>
+              <span>${i.peso} · caja x ${i.pack}${i.variante ? ` · ${i.variante}` : ''}</span>
+              <div class="cantidad">
+                <button data-cant="-1" data-clave="${i.clave}" aria-label="Restar una caja">−</button>
+                <output>${i.cantidad}</output>
+                <button data-cant="1" data-clave="${i.clave}" aria-label="Sumar una caja">+</button>
+              </div>
+            </div>
+            <button class="quitar" data-quitar="${i.clave}" aria-label="Quitar"><svg class="icono"><use href="#i-basura"/></svg></button>
+          </div>`;
+      }).join('');
+    }
+
+    function abrirPanel(abrir) {
+      $('#panel').classList.toggle('abierto', abrir);
+      $('#panel').setAttribute('aria-hidden', !abrir);
+      $('#fondo-panel').classList.toggle('visible', abrir);
+      document.body.style.overflow = abrir ? 'hidden' : '';
+    }
+
+    function enviarConsulta() {
+      if (!estado.consulta.length) return;
+      const negocio = $('#negocio').value.trim();
+      let msg = `¡Hola Melesia!${negocio ? ` Soy ${negocio}.` : ''} Vi el catálogo online y me interesa cotizar:\n\n`;
+      estado.consulta.forEach((i, n) => {
+        msg += `${n + 1}. ${i.titulo}${i.variante ? ` (${i.variante})` : ''}\n   ${i.peso}, caja x ${i.pack}: ${i.cantidad} ${i.cantidad === 1 ? 'caja' : 'cajas'}\n`;
+      });
+      msg += '\n¿Me pasan precios, condiciones de pago y envío? ¡Gracias!';
+      window.open(linkWhatsApp(msg), '_blank', 'noopener');
+    }
+
+    let temporizadorAviso;
+    function avisar(texto) {
+      $('#aviso').textContent = texto;
+      $('#aviso').classList.add('visible');
+      clearTimeout(temporizadorAviso);
+      temporizadorAviso = setTimeout(() => $('#aviso').classList.remove('visible'), 1800);
+    }
+
+    function leerHash() {
+      const m = location.hash.match(/^#producto\/(.+)$/);
+      if (m) abrirFicha(m[1], false);
+      else cerrarFicha(false);
+    }
+
+    // Eventos
+    $('#buscar').addEventListener('input', (e) => {
+      estado.busqueda = e.target.value;
+      $('#limpiar').classList.toggle('visible', !!e.target.value);
+      pintarGrilla();
+    });
+    $('#limpiar').addEventListener('click', () => {
+      $('#buscar').value = ''; estado.busqueda = '';
+      $('#limpiar').classList.remove('visible');
+      pintarGrilla(); $('#buscar').focus();
+    });
+    $('#chips').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-cat]');
+      if (!b) return;
+      estado.categoria = b.dataset.cat;
+      pintarChips(); pintarGrilla();
+    });
+    $('#grilla').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-abrir]');
+      if (b) abrirFicha(b.dataset.abrir);
+    });
+    $('#capa').addEventListener('click', (e) => { if (e.target === $('#capa')) cerrarFicha(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if ($('#panel').classList.contains('abierto')) abrirPanel(false);
+      else cerrarFicha();
+    });
+    window.addEventListener('popstate', leerHash);
+
+    $('#abrir-lista').addEventListener('click', () => abrirPanel(true));
+    $('#cerrar-panel').addEventListener('click', () => abrirPanel(false));
+    $('#fondo-panel').addEventListener('click', () => abrirPanel(false));
+    $('#enviar').addEventListener('click', enviarConsulta);
+    $('#items').addEventListener('click', (e) => {
+      const c = e.target.closest('[data-cant]');
+      const q = e.target.closest('[data-quitar]');
+      if (c) {
+        const item = estado.consulta.find(i => i.clave === c.dataset.clave);
+        item.cantidad += +c.dataset.cant;
+        if (item.cantidad <= 0) estado.consulta = estado.consulta.filter(i => i !== item);
+      }
+      if (q) estado.consulta = estado.consulta.filter(i => i.clave !== q.dataset.quitar);
+      if (c || q) { guardarConsulta(); pintarConsulta(); }
+    });
+
+    // Inicio
+    $('#anio').textContent = new Date().getFullYear();
+    prepararLinksGenerales();
+    cargarConsulta();
+    pintarChips();
+    pintarGrilla();
+    pintarConsulta();
+    leerHash();
+  </script>
+</body>
+</html>
