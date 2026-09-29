@@ -206,7 +206,8 @@
       }
     }
 
-    function getFinalPrice(basePrice) {
+    function getFinalPrice(basePrice, product) {
+      if (product && product.noDiscount) return basePrice;
       return basePrice * (1 - currentDiscount);
     }
 
@@ -215,31 +216,30 @@
       {
         id: "pampera",
         category: "PAMPERA",
-        title: "PAMPERA - Miel Tradicional",
-        badge: "Miel",
+        title: "PAMPERA - Miel Mezcla",
+        badge: "Miel Mezcla",
         image: "Pampera-Portada.jpg",
-        desc: "Línea Pampera. Presentaciones en frasco tradicional para consumo familiar o comercial.",
+        desc: "Línea Pampera. Miel mezcla, endulzante a base de jarabe de maíz en potes con tapa de aluminio y sobretapa, ideal para consumo familiar o comercial.",
         hasTextureOption: false,
         items: [
-          { name: "250 GR. X 12 U.", price: 12214.61 },
-          { name: "500 GR. X 6 U.", price: 11520.77 },
-          { name: "500 GR. X 12 U.", price: 22689.69 }
+          { name: "250 GR. X 12 U.", price: 12125.41 },
+          { name: "500 GR. X 12 U.", price: 22524.15 }
         ]
       },
       {
         id: "la_chacra",
         category: "LA CHACRA",
-        title: "LA CHACRA - Miel Botella PET",
+        title: "LA CHACRA - Miel Mezcla Botella PET",
         badge: "Envase PET",
         image: "Chacra-Portada.jpg",
-        desc: "Miel pura presentada en botellas prácticas e irrompibles de PET.",
+        desc: "Miel mezcla, endulzante a base de jarabe de maíz, en botellas prácticas e irrompibles de PET con tapa a rosca.",
         hasTextureOption: false,
         items: [
-          { name: "350 G X 12 U. BOTELLA PET", price: 19413.85 },
-          { name: "500 G X 12 U. BOTELLA PET", price: 25369.23 },
-          { name: "750 G X 12 U. BOTELLA PET", price: 33677.69 },
-          { name: "1000 G X 8 U. BOTELLA PET", price: 27061.08 },
-          { name: "1500 G X 6 U. BOTELLA PET", price: 27972.15 }
+          { name: "350 G X 12 U. BOTELLA PET", price: 19366.05 },
+          { name: "500 G X 12 U. BOTELLA PET", price: 25305.94 },
+          { name: "750 G X 12 U. BOTELLA PET", price: 33593.23 },
+          { name: "1000 G X 8 U. BOTELLA PET", price: 26993.89 },
+          { name: "1500 G X 6 U. BOTELLA PET", price: 27902.60 }
         ]
       },
       {
@@ -248,12 +248,12 @@
         title: "FLOR DE CAMPO - UNTABLE",
         badge: "Mezcla 33% Miel",
         image: "FDC-Mezcla-Portada.jpg",
-        desc: "Producto Untable especial de la marca Flor de Campo. Elaborado con mezcla balanceada al 33% de miel.",
+        desc: "Endulzante untable de la marca Flor de Campo, a base de jarabe de maíz con 33% de miel. Pote cilíndrico (250 g), tipo cantábrico (500 g) y tamaño familiar (1000 g).",
         hasTextureOption: false,
         items: [
-          { name: "250 GR. X 12 U.", price: 25034.00 },
-          { name: "500 GR. X 12 U.", price: 36824.77 },
-          { name: "1000 GR. X 6 U.", price: 28748.00 }
+          { name: "250 GR. X 12 U.", price: 15391.20 },
+          { name: "500 GR. X 12 U.", price: 27994.56 },
+          { name: "1000 GR. X 6 U.", price: 25453.56 }
         ]
       },
       {
@@ -262,12 +262,12 @@
         title: "FLOR DE CAMPO - MIEL DE ABEJAS",
         badge: "100% Miel Pura",
         image: "FDC-Miel-Portada.jpg",
-        desc: "Miel pura de abejas seleccionada. Disponible en consistencia Líquida o Cremosa según su preferencia.",
+        desc: "Miel pura de abejas seleccionada. Pote PET (250 g y 1000 g) o frasco de vidrio con tapa dorada (500 g). Disponible en consistencia Líquida o Cremosa.",
         hasTextureOption: true,
         items: [
-          { name: "250 GR. X 12 U.", price: 35939.23 },
-          { name: "500 GR. X 12 U.", price: 58284.77 },
-          { name: "1000 GR. X 6 U.", price: 51972.15 }
+          { name: "250 GR. X 12 U.", price: 30346.80 },
+          { name: "500 GR. X 12 U.", price: 55176.00 },
+          { name: "1000 GR. X 6 U.", price: 49658.40 }
         ]
       },
       {
@@ -276,10 +276,11 @@
         title: "LA CHACRA - DULCE DE LECHE",
         badge: "Dulce de Leche",
         image: "DDL-Chara-Portada.jpg",
-        desc: "Dulce de leche artesanal elaborado bajo altos estándares de calidad.",
+        desc: "Dulce de leche artesanal en potes con tapa de aluminio y sobretapa. No aplica descuento por código.",
         hasTextureOption: false,
+        noDiscount: true,
         items: [
-          { name: "400 G X 12 U.", price: 15000.0 }
+          { name: "400 G X 12 U.", price: 16200.00 }
         ]
       }
     ];
@@ -317,7 +318,7 @@
                       Presentación (Pack cerrado):
                     </label>
                     <select id="select-item-${p.id}" onchange="updateCardPrice('${p.id}')" class="w-full bg-stone-50 border border-stone-200 text-stone-800 text-sm font-bold rounded-2xl p-3.5 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none transition shadow-sm cursor-pointer">
-                      ${p.items.map((item, idx) => `<option value="${idx}">${item.name} — ${formatPrice(getFinalPrice(item.price))}</option>`).join('')}
+                      ${p.items.map((item, idx) => `<option value="${idx}">${item.name} — ${formatPrice(getFinalPrice(item.price, p))}</option>`).join('')}
                     </select>
                   </div>
 
@@ -344,7 +345,7 @@
               <div>
                 <span class="text-[10px] text-stone-400 block font-extrabold uppercase tracking-wider">Precio Final Pack (C/IVA)</span>
                 <span id="price-display-${p.id}" class="text-2xl font-black text-amber-950">
-                  ${formatPrice(getFinalPrice(p.items[0].price))}
+                  ${formatPrice(getFinalPrice(p.items[0].price, p))}
                 </span>
               </div>
               <button onclick="addToCart('${p.id}')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-5 py-3 rounded-2xl text-sm transition flex items-center gap-2 shadow-md shadow-amber-600/20 active:scale-95">
@@ -362,7 +363,7 @@
       const p = products.find(item => item.id === productId);
       const idx = document.getElementById(`select-item-${productId}`).value;
       const display = document.getElementById(`price-display-${productId}`);
-      display.innerText = formatPrice(getFinalPrice(p.items[idx].price));
+      display.innerText = formatPrice(getFinalPrice(p.items[idx].price, p));
     }
 
     function addToCart(productId) {
@@ -383,7 +384,7 @@
 
       const cartKey = `${productId}-${itemIdx}-${texture || 'standard'}`;
       const existing = cart.find(item => item.cartKey === cartKey);
-      const priceToApply = getFinalPrice(selectedItem.price);
+      const priceToApply = getFinalPrice(selectedItem.price, p);
 
       if (existing) {
         existing.qty++;
