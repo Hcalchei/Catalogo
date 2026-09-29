@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Melesia · Catálogo de productos</title>
-  <meta name="description" content="Catálogo de productos Melesia: miel pura, miel mezcla y dulce de leche de fábrica. Consultá por WhatsApp.">
+  <meta name="description" content="Catálogo de productos Melesia: miel pura, miel mezcla, dulce de leche y quesos de fábrica. Consultá por WhatsApp.">
   <meta property="og:title" content="Melesia · Catálogo de productos">
-  <meta property="og:description" content="Miel pura, miel mezcla y dulce de leche directo de fábrica.">
+  <meta property="og:description" content="Miel pura, miel mezcla, dulce de leche y quesos directo de fábrica.">
   <meta property="og:image" content="../Banner-Portada.jpg">
   <meta name="theme-color" content="#3f5a18">
   <link rel="icon" href="../Logo.jpg">
@@ -295,7 +295,7 @@
       <img src="../Banner-Portada.jpg" alt="Frasco de miel con panal y flores">
       <div class="contenedor">
         <span class="etiqueta">Industria Argentina · Venta mayorista</span>
-        <h1>Miel pura, miel mezcla y dulce de leche directo de fábrica</h1>
+        <h1>Miel, dulce de leche y quesos directo de fábrica</h1>
         <p>Conocé nuestras marcas y presentaciones. Elegí lo que te interesa y armá tu consulta por WhatsApp en un minuto.</p>
         <div class="botones">
           <a class="btn btn-wa" href="#productos"><svg class="icono"><use href="#i-caja"/></svg>Ver productos</a>
@@ -308,7 +308,7 @@
       <div class="beneficios">
         <div class="beneficio"><svg class="icono"><use href="#i-fabrica"/></svg><div><b>Precio de fábrica</b><span>Sin intermediarios</span></div></div>
         <div class="beneficio"><svg class="icono"><use href="#i-caja"/></svg><div><b>Packs cerrados</b><span>Listos para góndola</span></div></div>
-        <div class="beneficio"><svg class="icono"><use href="#i-hoja"/></svg><div><b>3 marcas</b><span>Para cada segmento</span></div></div>
+        <div class="beneficio"><svg class="icono"><use href="#i-hoja"/></svg><div><b>4 marcas</b><span>Para cada segmento</span></div></div>
         <div class="beneficio"><svg class="icono"><use href="#i-camion"/></svg><div><b>Envíos coordinados</b><span>A comercios y distribuidores</span></div></div>
       </div>
 
@@ -387,7 +387,8 @@
       { id: 'todos', nombre: 'Todos' },
       { id: 'miel', nombre: 'Miel de abejas' },
       { id: 'miel-mezcla', nombre: 'Miel mezcla' },
-      { id: 'dulce-de-leche', nombre: 'Dulce de leche' }
+      { id: 'dulce-de-leche', nombre: 'Dulce de leche' },
+      { id: 'quesos', nombre: 'Quesos' }
     ];
 
     // Catálogo. Las presentaciones son packs cerrados de venta mayorista.
@@ -472,11 +473,117 @@
         presentaciones: [
           { peso: '400 g', pack: '12 unidades' }
         ]
+      },
+      // Quesos de Lácteos La Chacra (fábrica de Colonia Cavour, Santa Fe). No es la
+      // misma marca que la Miel Mezcla La Chacra. Sin peso ni pack confirmados todavía:
+      // pack: null muestra "presentación a consultar".
+      {
+        id: 'lacteos-la-chacra-tybo',
+        marca: 'Lácteos La Chacra',
+        nombre: 'Queso Tybo',
+        categoria: 'quesos',
+        insignia: 'Semiduro',
+        imagen: '../lacteos/tybo.jpg',
+        resumen: 'Queso semiduro de sabor suave, en barra.',
+        descripcion: 'Queso de pasta semidura y sabor suave, fácil de fetear. Un clásico para sándwiches, tostados y picadas. Elaborado por Lácteos La Chacra en Colonia Cavour, Santa Fe.',
+        caracteristicas: ['Pasta semidura', 'Sabor suave', 'Ideal para fetear', 'Industria Argentina'],
+        presentaciones: [
+          { peso: 'Barra', pack: null }
+        ]
+      },
+      {
+        id: 'lacteos-la-chacra-pategras',
+        marca: 'Lácteos La Chacra',
+        nombre: 'Queso Pategrás',
+        categoria: 'quesos',
+        insignia: 'Semiduro',
+        imagen: '../lacteos/pategras.jpg',
+        resumen: 'Queso semiduro estacionado, en horma.',
+        descripcion: 'Queso de pasta firme, semidura y semicocida, salado y estacionado. De sabor más intenso, ideal para picadas y cocina. Elaborado por Lácteos La Chacra en Colonia Cavour, Santa Fe.',
+        caracteristicas: ['Pasta semidura estacionada', 'Sabor intenso', 'Ideal para picadas', 'Industria Argentina'],
+        presentaciones: [
+          { peso: 'Horma', pack: null }
+        ]
+      },
+      {
+        id: 'lacteos-la-chacra-por-salut',
+        marca: 'Lácteos La Chacra',
+        nombre: 'Queso Por Salut',
+        categoria: 'quesos',
+        insignia: 'Blando',
+        imagen: '../lacteos/por-salut.jpg',
+        resumen: 'Queso blando y cremoso, en horma.',
+        descripcion: 'Queso de pasta blanda, húmeda y cremosa, de sabor suave. Se funde muy bien: ideal para pizzas, tartas y postre vigilante. Elaborado por Lácteos La Chacra en Colonia Cavour, Santa Fe.',
+        caracteristicas: ['Pasta blanda', 'Sabor suave', 'Se funde muy bien', 'Industria Argentina'],
+        presentaciones: [
+          { peso: 'Horma', pack: null }
+        ]
+      },
+      {
+        id: 'lacteos-la-chacra-sardo',
+        marca: 'Lácteos La Chacra',
+        nombre: 'Queso Sardo',
+        categoria: 'quesos',
+        insignia: 'Duro',
+        imagen: '../lacteos/sardo.jpg',
+        resumen: 'Queso duro de sabor intenso, en horma.',
+        descripcion: 'Queso de pasta dura y sabor marcado, ideal para rallar sobre pastas o para servir en fetas finas en una picada. Elaborado por Lácteos La Chacra en Colonia Cavour, Santa Fe.',
+        caracteristicas: ['Pasta dura', 'Sabor intenso', 'Ideal para rallar', 'Industria Argentina'],
+        presentaciones: [
+          { peso: 'Horma', pack: null }
+        ]
+      },
+      {
+        id: 'lacteos-la-chacra-cremoso',
+        marca: 'Lácteos La Chacra',
+        nombre: 'Queso Cremoso',
+        categoria: 'quesos',
+        insignia: 'Blando',
+        imagen: '../lacteos/cremoso.jpg',
+        resumen: 'Queso cremoso clásico, en horma.',
+        descripcion: 'El queso cremoso de toda la vida: pasta blanda, húmeda y de sabor suave. Muy buena rotación en almacenes y rotiserías. Elaborado por Lácteos La Chacra en Colonia Cavour, Santa Fe.',
+        caracteristicas: ['Pasta blanda', 'Sabor suave', 'Alta rotación', 'Industria Argentina'],
+        presentaciones: [
+          { peso: 'Horma', pack: null }
+        ]
+      },
+      {
+        id: 'lacteos-la-chacra-cheddar',
+        marca: 'Lácteos La Chacra',
+        nombre: 'Queso Cheddar',
+        categoria: 'quesos',
+        insignia: 'Semiduro',
+        imagen: '../lacteos/cheddar.jpg',
+        resumen: 'Queso cheddar anaranjado, en barra.',
+        descripcion: 'Queso de color anaranjado y sabor característico, pensado para hamburguesas, sándwiches y gastronomía. Elaborado por Lácteos La Chacra en Colonia Cavour, Santa Fe.',
+        caracteristicas: ['Color anaranjado', 'Ideal para hamburguesas', 'Uso gastronómico', 'Industria Argentina'],
+        presentaciones: [
+          { peso: 'Barra', pack: null }
+        ]
+      },
+      {
+        id: 'lacteos-la-chacra-mozzarella',
+        marca: 'Lácteos La Chacra',
+        nombre: 'Queso Mozzarella',
+        categoria: 'quesos',
+        insignia: 'Pasta hilada',
+        imagen: '../lacteos/mozzarella.jpg',
+        resumen: 'Mozzarella para pizza, en barra.',
+        descripcion: 'Queso de pasta hilada que funde y estira parejo. Pensada para pizzerías, rotiserías y cocina en general. Elaborado por Lácteos La Chacra en Colonia Cavour, Santa Fe.',
+        caracteristicas: ['Pasta hilada', 'Funde y estira parejo', 'Ideal para pizza', 'Industria Argentina'],
+        presentaciones: [
+          { peso: 'Barra', pack: null }
+        ]
       }
     ];
 
     const estado = { categoria: 'todos', busqueda: '', consulta: [] };
     const $ = (sel) => document.querySelector(sel);
+
+    // Texto del pack cerrado; si todavía no está confirmado, se consulta.
+    function textoPack(pack) {
+      return pack ? `caja x ${pack}` : 'presentación a consultar';
+    }
 
     function linkWhatsApp(texto) {
       return `https://wa.me/${TELEFONO}?text=${encodeURIComponent(texto)}`;
@@ -499,7 +606,7 @@
 
     function textoBuscable(p) {
       const cat = CATEGORIAS.find(c => c.id === p.categoria).nombre;
-      const pres = p.presentaciones.map(x => `${x.peso} ${x.peso.replace(' ', '')} ${x.pack}`).join(' ');
+      const pres = p.presentaciones.map(x => `${x.peso} ${x.peso.replace(' ', '')} ${x.pack || ''}`).join(' ');
       return normalizar([p.marca, p.nombre, cat, p.insignia, p.resumen, p.descripcion, (p.variantes || []).join(' '), pres].join(' '));
     }
 
@@ -563,7 +670,7 @@
             ${p.presentaciones.map((x, i) => `
               <label class="presentacion">
                 <span class="izq"><input type="radio" name="pres" value="${i}" ${i === 0 ? 'checked' : ''}><b>${x.peso}</b></span>
-                <span>Caja x ${x.pack}</span>
+                <span>${x.pack ? `Caja x ${x.pack}` : 'Consultar presentación'}</span>
               </label>`).join('')}
           </div>
 
@@ -589,7 +696,7 @@
       const actualizarConsultaYa = () => {
         const { pres, variante } = seleccion();
         $('#consultar-ya').href = linkWhatsApp(
-          `¡Hola Melesia! Me interesa ${p.marca} ${p.nombre}${variante ? ` (${variante})` : ''}, presentación ${pres.peso} en caja x ${pres.pack}. ¿Me pasan precio y condiciones?`
+          `¡Hola Melesia! Me interesa ${p.marca} ${p.nombre}${variante ? ` (${variante})` : ''}, presentación ${pres.peso}${pres.pack ? ` en caja x ${pres.pack}` : ''}. ¿Me pasan precio y condiciones?`
         );
       };
       actualizarConsultaYa();
@@ -671,7 +778,7 @@
             <img src="${p.imagen}" alt="">
             <div>
               <b>${i.titulo}</b>
-              <span>${i.peso} · caja x ${i.pack}${i.variante ? ` · ${i.variante}` : ''}</span>
+              <span>${i.peso} · ${textoPack(i.pack)}${i.variante ? ` · ${i.variante}` : ''}</span>
               <div class="cantidad">
                 <button data-cant="-1" data-clave="${i.clave}" aria-label="Restar una caja">−</button>
                 <output>${i.cantidad}</output>
@@ -695,7 +802,7 @@
       const negocio = $('#negocio').value.trim();
       let msg = `¡Hola Melesia!${negocio ? ` Soy ${negocio}.` : ''} Vi el catálogo online y me interesa cotizar:\n\n`;
       estado.consulta.forEach((i, n) => {
-        msg += `${n + 1}. ${i.titulo}${i.variante ? ` (${i.variante})` : ''}\n   ${i.peso}, caja x ${i.pack}: ${i.cantidad} ${i.cantidad === 1 ? 'caja' : 'cajas'}\n`;
+        msg += `${n + 1}. ${i.titulo}${i.variante ? ` (${i.variante})` : ''}\n   ${i.peso}, ${textoPack(i.pack)}: ${i.cantidad} ${i.pack ? (i.cantidad === 1 ? 'caja' : 'cajas') : (i.cantidad === 1 ? 'unidad' : 'unidades')}\n`;
       });
       msg += '\n¿Me pasan precios, condiciones de pago y envío? ¡Gracias!';
       window.open(linkWhatsApp(msg), '_blank', 'noopener');
