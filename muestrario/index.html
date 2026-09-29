@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Melesia · Catálogo de productos</title>
-  <meta name="description" content="Catálogo de productos Melesia: miel de abejas, endulzantes y dulce de leche de fábrica. Consultá por WhatsApp.">
+  <meta name="description" content="Catálogo de productos Melesia: miel pura, miel mezcla y dulce de leche de fábrica. Consultá por WhatsApp.">
   <meta property="og:title" content="Melesia · Catálogo de productos">
-  <meta property="og:description" content="Miel de abejas, endulzantes y dulce de leche directo de fábrica.">
+  <meta property="og:description" content="Miel pura, miel mezcla y dulce de leche directo de fábrica.">
   <meta property="og:image" content="../Banner-Portada.jpg">
   <meta name="theme-color" content="#3f5a18">
   <link rel="icon" href="../Logo.jpg">
@@ -295,7 +295,7 @@
       <img src="../Banner-Portada.jpg" alt="Frasco de miel con panal y flores">
       <div class="contenedor">
         <span class="etiqueta">Industria Argentina · Venta mayorista</span>
-        <h1>Miel, endulzantes y dulce de leche directo de fábrica</h1>
+        <h1>Miel pura, miel mezcla y dulce de leche directo de fábrica</h1>
         <p>Conocé nuestras marcas y presentaciones. Elegí lo que te interesa y armá tu consulta por WhatsApp en un minuto.</p>
         <div class="botones">
           <a class="btn btn-wa" href="#productos"><svg class="icono"><use href="#i-caja"/></svg>Ver productos</a>
@@ -386,7 +386,7 @@
     const CATEGORIAS = [
       { id: 'todos', nombre: 'Todos' },
       { id: 'miel', nombre: 'Miel de abejas' },
-      { id: 'endulzantes', nombre: 'Endulzantes' },
+      { id: 'miel-mezcla', nombre: 'Miel mezcla' },
       { id: 'dulce-de-leche', nombre: 'Dulce de leche' }
     ];
 
@@ -414,7 +414,7 @@
         id: 'flor-de-campo-untable',
         marca: 'Flor de Campo',
         nombre: 'Untable con miel',
-        categoria: 'endulzantes',
+        categoria: 'miel-mezcla',
         insignia: 'Con 33% de miel',
         imagen: '../FDC-Mezcla-Portada.jpg',
         resumen: 'Endulzante untable a base de jarabe de maíz con miel.',
@@ -429,12 +429,12 @@
       {
         id: 'la-chacra-pet',
         marca: 'La Chacra',
-        nombre: 'Endulzante en botella',
-        categoria: 'endulzantes',
+        nombre: 'Miel Mezcla en botella',
+        categoria: 'miel-mezcla',
         insignia: 'Botella PET',
         imagen: '../Chacra-Portada.jpg',
-        resumen: 'Endulzante a base de jarabe de maíz en botella práctica.',
-        descripcion: 'Endulzante a base de jarabe de maíz en botellas PET livianas e irrompibles. La línea con más presentaciones: desde 350 g para el hogar hasta 1500 g para gastronomía y uso comercial.',
+        resumen: 'Miel mezcla a base de jarabe de maíz en botella práctica.',
+        descripcion: 'Miel mezcla a base de jarabe de maíz en botellas PET livianas e irrompibles. La línea con más presentaciones: desde 350 g para el hogar hasta 1500 g para gastronomía y uso comercial.',
         caracteristicas: ['Botella PET irrompible', 'Pico dosificador práctico', '5 tamaños disponibles', 'Industria Argentina'],
         presentaciones: [
           { peso: '350 g', pack: '12 unidades' },
@@ -447,16 +447,15 @@
       {
         id: 'pampera',
         marca: 'Pampera',
-        nombre: 'Endulzante en pote',
-        categoria: 'endulzantes',
+        nombre: 'Miel Mezcla en pote',
+        categoria: 'miel-mezcla',
         insignia: 'Precio accesible',
         imagen: '../Pampera-Portada.jpg',
-        resumen: 'Endulzante a base de jarabe de maíz en pote tradicional.',
-        descripcion: 'Endulzante a base de jarabe de maíz en pote con tapa. Nuestra línea económica, de alta rotación, pensada para almacenes y autoservicios.',
+        resumen: 'Miel mezcla a base de jarabe de maíz en pote tradicional.',
+        descripcion: 'Miel mezcla a base de jarabe de maíz en pote con tapa. Nuestra línea económica, de alta rotación, pensada para almacenes y autoservicios.',
         caracteristicas: ['Pote con tapa a presión', 'Línea económica de alta rotación', 'Industria Argentina'],
         presentaciones: [
           { peso: '250 g', pack: '12 unidades' },
-          { peso: '500 g', pack: '6 unidades' },
           { peso: '500 g', pack: '12 unidades' }
         ]
       },
@@ -468,7 +467,7 @@
         insignia: 'Sin gluten',
         imagen: '../DDL-Chara-Portada.jpg',
         resumen: 'Dulce de leche libre de gluten en pote de 400 g.',
-        descripcion: 'Dulce de leche clásico, libre de gluten, en pote de 400 g. Elaborado bajo altos estándares de calidad, ideal para acompañar la línea de endulzantes en tu góndola.',
+        descripcion: 'Dulce de leche clásico, libre de gluten, en pote de 400 g. Elaborado bajo altos estándares de calidad, ideal para acompañar la línea de miel en tu góndola.',
         caracteristicas: ['Libre de gluten', 'Pote de 400 g', 'Industria Argentina'],
         presentaciones: [
           { peso: '400 g', pack: '12 unidades' }
